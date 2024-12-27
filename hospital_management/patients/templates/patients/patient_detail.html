@@ -1,0 +1,138 @@
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Sidebar remains the same -->
+    <div class="sidebar">
+        <!-- ... existing sidebar code ... -->
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="patient-detail-container">
+            <div class="back-button">
+                <a href="{% url 'patients:patient_list' %}" class="back-link">
+                    <i class="fas fa-arrow-left"></i> Back to Patients
+                </a>
+            </div>
+
+            <div class="patient-report">
+                <h2>Patient Report</h2>
+                
+                <div class="report-section">
+                    <h3>Personal Information</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <label>Full Name</label>
+                            <p>{{ patient.first_name }} {{ patient.last_name }}</p>
+                        </div>
+                        <div class="info-item">
+                            <label>Gender</label>
+                            <p>{{ patient.get_gender_display }}</p>
+                        </div>
+                        <div class="info-item">
+                            <label>Date of Birth</label>
+                            <p>{{ patient.date_of_birth }}</p>
+                        </div>
+                        <div class="info-item">
+                            <label>Blood Group</label>
+                            <p>{{ patient.blood_group|default:"Not specified" }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="report-section">
+                    <h3>Contact Information</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <label>Phone Number</label>
+                            <p>{{ patient.phone_number }}</p>
+                        </div>
+                        <div class="info-item">
+                            <label>Email</label>
+                            <p>{{ patient.email|default:"Not provided" }}</p>
+                        </div>
+                        <div class="info-item">
+                            <label>Address</label>
+                            <p>{{ patient.address|default:"Not provided" }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="report-section">
+                    <h3>Medical History</h3>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <label>Medical Conditions</label>
+                            <p>{{ patient.medical_conditions|default:"None recorded" }}</p>
+                        </div>
+                        <div class="info-item">
+                            <label>Allergies</label>
+                            <p>{{ patient.allergies|default:"None recorded" }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<style>
+    .patient-detail-container {
+        padding: 20px;
+    }
+
+    .back-button {
+        margin-bottom: 24px;
+    }
+
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .patient-report {
+        background: white;
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: var(--card-shadow);
+    }
+
+    .patient-report h2 {
+        margin-bottom: 24px;
+        color: var(--text-primary);
+    }
+
+    .report-section {
+        margin-bottom: 32px;
+    }
+
+    .report-section h3 {
+        color: var(--text-secondary);
+        margin-bottom: 16px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 24px;
+    }
+
+    .info-item label {
+        display: block;
+        font-size: 14px;
+        color: var(--text-secondary);
+        margin-bottom: 4px;
+    }
+
+    .info-item p {
+        font-size: 16px;
+        color: var(--text-primary);
+    }
+</style>
+{% endblock %} 

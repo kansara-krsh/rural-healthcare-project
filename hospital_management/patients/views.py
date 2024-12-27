@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from .models import Patient, Appointment
 from django.utils import timezone
 from datetime import datetime, timedelta
+from django.db.models import Q
 
 def login_view(request):
     if request.method == 'POST':
@@ -23,12 +24,25 @@ def login_view(request):
 
 @login_required
 def home(request):
-    return render(request, 'patients/base.html')
+    return render(request, 'patients/index.html')
 
 @login_required
 def patient_list(request):
-    patients = Patient.objects.all()
-    return render(request, 'patients/patient_list.html', {'patients': patients})
+    search_query = request.GET.get('search', '')
+    if search_query:
+        patients = Patient.objects.filter(
+            Q(first_name__icontains=search_query) |
+            Q(last_name__icontains=search_query) |
+            Q(phone_number__icontains=search_query) |
+            Q(email__icontains=search_query)
+        )
+    else:
+        patients = Patient.objects.all()
+    
+    return render(request, 'patients/patient_list.html', {
+        'patients': patients,
+        'search_query': search_query
+    })
 
 @login_required
 def appointment_list(request):
@@ -88,3 +102,10 @@ def dashboard(request):
         'recent_appointments': recent_appointments,
     }
     return render(request, 'patients/dashboard.html', context)
+
+@login_required
+def patient_detail(request, patient_id):
+    patient = get_object_or_404(Patient, id=patient_id)
+    return render(request, 'patients/patient_detail.html', {
+        'patient': patient
+    })

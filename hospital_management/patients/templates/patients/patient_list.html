@@ -1,0 +1,156 @@
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <h2>HMS</h2>
+        </div>
+        <nav>
+            <a href="{% url 'patients:dashboard' %}" class="nav-item">
+                <i class="fas fa-home"></i>
+                Dashboard
+            </a>
+            <a href="{% url 'patients:patient_list' %}" class="nav-item active">
+                <i class="fas fa-users"></i>
+                Patients
+            </a>
+            <a href="{% url 'patients:appointment_list' %}" class="nav-item">
+                <i class="fas fa-calendar-check"></i>
+                Appointments
+            </a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="patient-list-container">
+            <!-- Search Section -->
+            <div class="actions-bar">
+                <div class="search-box">
+                    <form method="GET" action="{% url 'patients:patient_list' %}">
+                        <input type="text" 
+                               name="search" 
+                               placeholder="Search patients by name or phone..." 
+                               value="{{ search_query }}"
+                        >
+                        <button type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Simplified Patients Table -->
+            <div class="table-container">
+                <table class="patients-table">
+                    <thead>
+                        <tr>
+                            <th>Patient ID</th>
+                            <th>Name</th>
+                            <th>Phone</th>
+                            <th>View Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for patient in patients %}
+                        <tr>
+                            <td>{{ patient.id }}</td>
+                            <td>{{ patient.first_name }} {{ patient.last_name }}</td>
+                            <td>{{ patient.phone_number }}</td>
+                            <td>
+                                <a href="{% url 'patients:patient_detail' patient.id %}" class="view-btn">
+                                    View Report
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="no-results">No patients found</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+
+<style>
+    /* Simplified styles */
+    .patient-list-container {
+        padding: 20px;
+    }
+
+    .search-box {
+        margin-bottom: 24px;
+    }
+
+    .search-box form {
+        display: flex;
+        gap: 10px;
+        max-width: 500px;
+    }
+
+    .search-box input {
+        flex: 1;
+        padding: 12px 16px;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        font-size: 14px;
+    }
+
+    .search-box button {
+        padding: 12px 20px;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+
+    .patients-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: var(--card-shadow);
+    }
+
+    .patients-table th,
+    .patients-table td {
+        padding: 16px;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .patients-table th {
+        background: #f8fafc;
+        font-weight: 600;
+    }
+
+    .view-btn {
+        display: inline-block;
+        padding: 8px 16px;
+        background: var(--primary-color);
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+        font-size: 14px;
+    }
+
+    .view-btn:hover {
+        opacity: 0.9;
+    }
+
+    .no-results {
+        text-align: center;
+        color: var(--text-secondary);
+        padding: 32px !important;
+    }
+</style>
+
+<!-- Add Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+{% endblock %} 
