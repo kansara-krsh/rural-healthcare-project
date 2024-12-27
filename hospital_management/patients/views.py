@@ -29,20 +29,52 @@ def home(request):
 @login_required
 def patient_list(request):
     search_query = request.GET.get('search', '')
+    
+    # Get total patients count
+    total_patients = Patient.objects.count()
+    
+    # Get patients with alerts (example criteria)
+    # 1. Patients with pending status
+    # 2. Patients who haven't visited in last 6 months
+    # 3. Patients with critical conditions
+    six_months_ago = datetime.now() - timedelta(days=180)
+    
+    patients_with_alerts = Patient.objects.filter(
+        Q(status='pending') |
+        Q(updated_at__lt=six_months_ago)
+    )
+    
+    patient_alerts = {
+        'total': patients_with_alerts.count(),
+        'details': [
+            {
+                'id': patient.id,
+                'name': f"{patient.first_name} {patient.last_name}",
+                'reason': 'Pending Review' if patient.status == 'pending' else 'Follow-up Required',
+                'days': (datetime.now().date() - patient.updated_at.date()).days,
+                'status': patient.status
+            }
+            for patient in patients_with_alerts[:5]  # Get latest 5 alerts
+        ]
+    }
+    
     if search_query:
         patients = Patient.objects.filter(
             Q(first_name__icontains=search_query) |
             Q(last_name__icontains=search_query) |
-            Q(phone_number__icontains=search_query) |
-            Q(email__icontains=search_query)
+            Q(phone_number__icontains=search_query)
         )
     else:
         patients = Patient.objects.all()
     
-    return render(request, 'patients/patient_list.html', {
+    context = {
         'patients': patients,
-        'search_query': search_query
-    })
+        'search_query': search_query,
+        'total_patients': total_patients,
+        'patient_alerts': patient_alerts,
+    }
+    
+    return render(request, 'patients/patient_list.html', context)
 
 @login_required
 def appointment_list(request):
@@ -109,3 +141,51 @@ def patient_detail(request, patient_id):
     return render(request, 'patients/patient_detail.html', {
         'patient': patient
     })
+
+@login_required
+def patient_edit(request, patient_id):
+    patient = get_object_or_404(Patient, id=patient_id)
+    
+    if request.method == 'POST':
+        # Handle form submission
+        patient.first_name = request.POST.get('first_name')
+        patient.last_name = request.POST.get('last_name')
+        patient.date_of_birth = request.POST.get('date_of_birth')
+        patient.gender = request.POST.get('gender')
+        patient.phone_number = request.POST.get('phone_number')
+        patient.email = request.POST.get('email')
+        patient.address = request.POST.get('address')
+        patient.blood_group = request.POST.get('blood_group')
+        patient.medical_history = request.POST.get('medical_history')
+        patient.current_medications = request.POST.get('current_medications')
+        patient.save()
+        
+        messages.success(request, 'Patient details updated successfully')
+        return redirect('patients:patient_detail', patient_id=patient.id)
+    
+    return render(request, 'patients/patient_edit.html', {
+        'patient': patient
+    })
+
+@login_required
+def add_patient(request):
+    if request.method == 'POST':
+        try:
+            patient = Patient.objects.create(
+                first_name=request.POST.get('first_name'),
+                last_name=request.POST.get('last_name'),
+                date_of_birth=request.POST.get('date_of_birth'),
+                gender=request.POST.get('gender'),
+                phone_number=request.POST.get('phone_number'),
+                email=request.POST.get('email'),
+                address=request.POST.get('address'),
+                blood_group=request.POST.get('blood_group'),
+                status='active'  # Set default status as active
+            )
+            messages.success(request, 'Patient added successfully!')
+            return redirect('patients:patient_detail', patient_id=patient.id)
+        except Exception as e:
+            messages.error(request, f'Error adding patient: {str(e)}')
+            return redirect('patients:add_patient')
+    
+    return render(request, 'patients/add_patient.html')

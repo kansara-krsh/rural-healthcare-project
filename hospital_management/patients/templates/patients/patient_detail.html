@@ -1,138 +1,292 @@
+{% extends 'patients/base.html' %}
+
+{% block title %}Patient Details{% endblock %}
 
 {% block content %}
-<div class="dashboard-container">
-    <!-- Sidebar remains the same -->
-    <div class="sidebar">
-        <!-- ... existing sidebar code ... -->
+<div class="page-header" data-reveal="top">
+    <div class="header-content">
+        <h2 class="gradient-text">Patient Report</h2>
+        <div class="header-actions">
+            <a href="{% url 'patients:patient_edit' patient.id %}" class="edit-btn hover-float">
+                <i class="fas fa-edit"></i>
+                Edit Patient
+            </a>
+        </div>
     </div>
+</div>
 
-    <!-- Main Content -->
-    <main class="main-content">
-        <div class="patient-detail-container">
-            <div class="back-button">
-                <a href="{% url 'patients:patient_list' %}" class="back-link">
-                    <i class="fas fa-arrow-left"></i> Back to Patients
-                </a>
+<div class="patient-profile-container">
+    <!-- Patient Basic Info Card -->
+    <div class="profile-card glass-effect" data-reveal="left">
+        <div class="profile-header">
+            <div class="patient-avatar">
+                {{ patient.first_name|first }}{{ patient.last_name|first }}
             </div>
-
-            <div class="patient-report">
-                <h2>Patient Report</h2>
-                
-                <div class="report-section">
-                    <h3>Personal Information</h3>
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <label>Full Name</label>
-                            <p>{{ patient.first_name }} {{ patient.last_name }}</p>
-                        </div>
-                        <div class="info-item">
-                            <label>Gender</label>
-                            <p>{{ patient.get_gender_display }}</p>
-                        </div>
-                        <div class="info-item">
-                            <label>Date of Birth</label>
-                            <p>{{ patient.date_of_birth }}</p>
-                        </div>
-                        <div class="info-item">
-                            <label>Blood Group</label>
-                            <p>{{ patient.blood_group|default:"Not specified" }}</p>
-                        </div>
-                    </div>
+            <div class="patient-basic-info">
+                <h3>{{ patient.first_name }} {{ patient.last_name }}</h3>
+                <span class="patient-id">#{{ patient.id }}</span>
+                <span class="status-badge active">Active Patient</span>
+            </div>
+        </div>
+        
+        <div class="info-grid">
+            <div class="info-item">
+                <i class="fas fa-calendar"></i>
+                <div class="info-content">
+                    <label>Date of Birth</label>
+                    <span>{{ patient.date_of_birth }}</span>
                 </div>
-
-                <div class="report-section">
-                    <h3>Contact Information</h3>
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <label>Phone Number</label>
-                            <p>{{ patient.phone_number }}</p>
-                        </div>
-                        <div class="info-item">
-                            <label>Email</label>
-                            <p>{{ patient.email|default:"Not provided" }}</p>
-                        </div>
-                        <div class="info-item">
-                            <label>Address</label>
-                            <p>{{ patient.address|default:"Not provided" }}</p>
-                        </div>
-                    </div>
+            </div>
+            <div class="info-item">
+                <i class="fas fa-venus-mars"></i>
+                <div class="info-content">
+                    <label>Gender</label>
+                    <span>{{ patient.gender }}</span>
                 </div>
-
-                <div class="report-section">
-                    <h3>Medical History</h3>
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <label>Medical Conditions</label>
-                            <p>{{ patient.medical_conditions|default:"None recorded" }}</p>
-                        </div>
-                        <div class="info-item">
-                            <label>Allergies</label>
-                            <p>{{ patient.allergies|default:"None recorded" }}</p>
-                        </div>
-                    </div>
+            </div>
+            <div class="info-item">
+                <i class="fas fa-tint"></i>
+                <div class="info-content">
+                    <label>Blood Group</label>
+                    <span>{{ patient.blood_group }}</span>
+                </div>
+            </div>
+            <div class="info-item">
+                <i class="fas fa-phone"></i>
+                <div class="info-content">
+                    <label>Phone</label>
+                    <span>{{ patient.phone_number }}</span>
+                </div>
+            </div>
+            <div class="info-item">
+                <i class="fas fa-envelope"></i>
+                <div class="info-content">
+                    <label>Email</label>
+                    <span>{{ patient.email }}</span>
+                </div>
+            </div>
+            <div class="info-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <div class="info-content">
+                    <label>Address</label>
+                    <span>{{ patient.address }}</span>
                 </div>
             </div>
         </div>
-    </main>
+    </div>
+
+    <!-- Medical History Section -->
+    <div class="medical-history-section" data-reveal="right">
+        <h3 class="section-title">Medical History</h3>
+        <div class="timeline-container">
+            {% for visit in medical_history %}
+            <div class="timeline-item">
+                <div class="timeline-date">
+                    <span class="date">{{ visit.date }}</span>
+                </div>
+                <div class="timeline-content glass-effect">
+                    <h4>{{ visit.reason }}</h4>
+                    <p>{{ visit.diagnosis }}</p>
+                    <div class="prescription-details">
+                        <i class="fas fa-prescription-bottle-alt"></i>
+                        <span>{{ visit.prescription }}</span>
+                    </div>
+                    <div class="doctor-info">
+                        <i class="fas fa-user-md"></i>
+                        <span>Dr. {{ visit.doctor }}</span>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="no-data">
+                <i class="fas fa-notes-medical"></i>
+                <p>No medical history available</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Upcoming Appointments -->
+    <div class="appointments-section glass-effect" data-reveal="bottom">
+        <h3 class="section-title">Upcoming Appointments</h3>
+        <div class="appointments-grid">
+            {% for appointment in upcoming_appointments %}
+            <div class="appointment-card hover-float">
+                <div class="appointment-date">
+                    <span class="day">{{ appointment.date|date:"d" }}</span>
+                    <span class="month">{{ appointment.date|date:"M" }}</span>
+                </div>
+                <div class="appointment-details">
+                    <h4>{{ appointment.type }}</h4>
+                    <p>{{ appointment.time }}</p>
+                    <span class="doctor">Dr. {{ appointment.doctor }}</span>
+                </div>
+                <span class="status-badge scheduled">Scheduled</span>
+            </div>
+            {% empty %}
+            <p class="no-data">No upcoming appointments</p>
+            {% endfor %}
+        </div>
+    </div>
 </div>
 
 <style>
-    .patient-detail-container {
-        padding: 20px;
+    .patient-profile-container {
+        display: grid;
+        gap: 2rem;
+        padding: 1rem;
     }
 
-    .back-button {
-        margin-bottom: 24px;
+    .profile-card {
+        padding: 2rem;
+        border-radius: var(--radius-12);
+        background: var(--white);
     }
 
-    .back-link {
-        display: inline-flex;
+    .profile-header {
+        display: flex;
         align-items: center;
-        gap: 8px;
-        color: var(--primary-color);
-        text-decoration: none;
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .patient-avatar {
+        width: 100px;
+        height: 100px;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: var(--white);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
         font-weight: 500;
-    }
-
-    .patient-report {
-        background: white;
-        border-radius: 12px;
-        padding: 24px;
-        box-shadow: var(--card-shadow);
-    }
-
-    .patient-report h2 {
-        margin-bottom: 24px;
-        color: var(--text-primary);
-    }
-
-    .report-section {
-        margin-bottom: 32px;
-    }
-
-    .report-section h3 {
-        color: var(--text-secondary);
-        margin-bottom: 16px;
-        padding-bottom: 8px;
-        border-bottom: 1px solid var(--border-color);
     }
 
     .info-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 24px;
+        gap: 1.5rem;
     }
 
-    .info-item label {
-        display: block;
-        font-size: 14px;
-        color: var(--text-secondary);
-        margin-bottom: 4px;
+    .info-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        background: var(--light-bg);
+        border-radius: var(--radius-12);
+        transition: transform 0.3s ease;
     }
 
-    .info-item p {
-        font-size: 16px;
-        color: var(--text-primary);
+    .info-item:hover {
+        transform: translateY(-2px);
+    }
+
+    .info-item i {
+        font-size: 1.5rem;
+        color: var(--primary-color);
+    }
+
+    .info-content {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .info-content label {
+        font-size: 0.875rem;
+        color: var(--text-light);
+    }
+
+    /* Timeline Styles */
+    .timeline-container {
+        position: relative;
+        padding: 1rem;
+    }
+
+    .timeline-item {
+        display: flex;
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .timeline-date {
+        min-width: 100px;
+        text-align: right;
+    }
+
+    .timeline-content {
+        flex: 1;
+        padding: 1.5rem;
+        border-radius: var(--radius-12);
+        position: relative;
+    }
+
+    .timeline-content::before {
+        content: '';
+        position: absolute;
+        left: -1rem;
+        top: 1rem;
+        width: 1rem;
+        height: 2px;
+        background: var(--primary-color);
+    }
+
+    /* Appointments Grid */
+    .appointments-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    .appointment-card {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        background: var(--white);
+        border-radius: var(--radius-12);
+        box-shadow: var(--shadow-2);
+    }
+
+    .appointment-date {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-width: 60px;
+    }
+
+    .day {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+
+    .month {
+        font-size: 0.875rem;
+        color: var(--text-light);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .profile-header {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .timeline-item {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .timeline-date {
+            text-align: left;
+        }
+
+        .timeline-content::before {
+            display: none;
+        }
     }
 </style>
 {% endblock %} 

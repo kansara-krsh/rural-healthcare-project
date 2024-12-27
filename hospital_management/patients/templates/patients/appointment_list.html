@@ -1,0 +1,404 @@
+{% extends 'patients/base.html' %}
+
+{% block title %}Appointments Management{% endblock %}
+
+{% block content %}
+<div class="page-header" data-reveal="top">
+    <h2 class="gradient-text">Appointments Management</h2>
+    <p class="subtitle">Schedule and manage patient appointments</p>
+</div>
+
+<!-- Quick Actions Section -->
+<div class="quick-actions" data-reveal="right">
+    <div class="search-container glass-effect">
+        <i class="fas fa-search search-icon"></i>
+        <input type="text" 
+               placeholder="Search appointments by patient name or date..." 
+               class="search-input"
+        >
+    </div>
+    <button class="schedule-btn hover-float">
+        <i class="fas fa-calendar-plus"></i>
+        <span>Schedule Appointment</span>
+    </button>
+</div>
+
+<!-- Calendar Quick View -->
+<div class="calendar-section" data-reveal="bottom">
+    <div class="date-navigation">
+        <button class="nav-btn"><i class="fas fa-chevron-left"></i></button>
+        <h3>May 2024</h3>
+        <button class="nav-btn"><i class="fas fa-chevron-right"></i></button>
+    </div>
+    <div class="calendar-grid">
+        <!-- Calendar days will be dynamically generated -->
+        <div class="calendar-day">
+            <span class="day-number">15</span>
+            <span class="appointment-count">3 appointments</span>
+        </div>
+        <!-- More calendar days... -->
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="stats-container" data-reveal="bottom">
+    <div class="stat-card card-hover-effect">
+        <div class="stat-icon">
+            <i class="fas fa-calendar-check"></i>
+        </div>
+        <div class="stat-details">
+            <h3>Today's Appointments</h3>
+            <p class="stat-number">12</p>
+            <span class="stat-trend">4 completed</span>
+        </div>
+    </div>
+
+    <div class="stat-card card-hover-effect">
+        <div class="stat-icon">
+            <i class="fas fa-clock"></i>
+        </div>
+        <div class="stat-details">
+            <h3>Upcoming</h3>
+            <p class="stat-number">28</p>
+            <span class="stat-trend">Next 7 days</span>
+        </div>
+    </div>
+
+    <div class="stat-card card-hover-effect">
+        <div class="stat-icon">
+            <i class="fas fa-user-clock"></i>
+        </div>
+        <div class="stat-details">
+            <h3>Waiting List</h3>
+            <p class="stat-number">5</p>
+            <span class="stat-trend urgent">Requires attention</span>
+        </div>
+    </div>
+</div>
+
+<!-- Today's Schedule -->
+<div class="schedule-section glass-effect" data-reveal="left">
+    <div class="section-header">
+        <h3>Today's Schedule</h3>
+        <div class="view-options">
+            <button class="view-btn active">Timeline</button>
+            <button class="view-btn">List</button>
+        </div>
+    </div>
+
+    <div class="timeline">
+        {% for appointment in today_appointments %}
+        <div class="timeline-item">
+            <div class="time-slot">
+                <span class="time">09:00 AM</span>
+                <span class="duration">30 min</span>
+            </div>
+            <div class="appointment-card">
+                <div class="patient-info">
+                    <div class="avatar">JS</div>
+                    <div class="details">
+                        <h4>John Smith</h4>
+                        <p>Regular Checkup</p>
+                    </div>
+                </div>
+                <div class="appointment-status">
+                    <span class="status-badge pending">Pending</span>
+                    <div class="actions">
+                        <button class="action-btn start hover-float" title="Start Appointment">
+                            <i class="fas fa-play"></i>
+                        </button>
+                        <button class="action-btn reschedule hover-float" title="Reschedule">
+                            <i class="fas fa-clock"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Upcoming Appointments -->
+<div class="upcoming-section" data-reveal="right">
+    <div class="section-header">
+        <h3>Upcoming Appointments</h3>
+        <div class="filter-options">
+            <button class="filter-btn active">All</button>
+            <button class="filter-btn">This Week</button>
+            <button class="filter-btn">Next Week</button>
+        </div>
+    </div>
+
+    <div class="appointments-grid">
+        {% for appointment in upcoming_appointments %}
+        <div class="appointment-card glass-effect">
+            <div class="card-header">
+                <div class="date-badge">
+                    <span class="day">23</span>
+                    <span class="month">May</span>
+                </div>
+                <span class="time-badge">10:30 AM</span>
+            </div>
+            <div class="card-body">
+                <div class="patient-details">
+                    <div class="avatar">MW</div>
+                    <div class="info">
+                        <h4>Michael Wilson</h4>
+                        <p>Follow-up Consultation</p>
+                    </div>
+                </div>
+                <div class="appointment-type">
+                    <i class="fas fa-stethoscope"></i>
+                    <span>General Checkup</span>
+                </div>
+                <div class="card-actions">
+                    <button class="action-btn view hover-float">View Details</button>
+                    <button class="action-btn edit hover-float">Modify</button>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    /* Base Styles */
+    :root {
+        --primary-color: hsl(182, 100%, 35%);
+        --primary-light: hsl(182, 100%, 45%);
+        --primary-dark: hsl(182, 100%, 25%);
+        --secondary-color: hsl(186, 100%, 19%);
+        --success-color: hsl(152, 69%, 31%);
+        --warning-color: hsl(36, 100%, 50%);
+        --danger-color: hsl(354, 70%, 54%);
+        --white: hsl(0, 0%, 100%);
+        --light-bg: hsl(180, 100%, 97%);
+        --border-color: hsl(180, 17%, 93%);
+    }
+
+    /* Calendar Section */
+    .calendar-section {
+        background: var(--white);
+        border-radius: var(--radius-12);
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: var(--shadow-2);
+    }
+
+    .date-navigation {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .nav-btn {
+        background: none;
+        border: none;
+        color: var(--primary-color);
+        cursor: pointer;
+        padding: 0.5rem;
+        border-radius: var(--radius-4);
+        transition: all 0.3s ease;
+    }
+
+    .nav-btn:hover {
+        background: var(--light-bg);
+    }
+
+    .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 0.5rem;
+    }
+
+    .calendar-day {
+        aspect-ratio: 1;
+        padding: 0.5rem;
+        border-radius: var(--radius-4);
+        border: 1px solid var(--border-color);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .calendar-day:hover {
+        background: var(--light-bg);
+        border-color: var(--primary-color);
+    }
+
+    .day-number {
+        font-size: 1.2rem;
+        font-weight: 500;
+    }
+
+    .appointment-count {
+        font-size: 0.75rem;
+        color: var(--text-light);
+    }
+
+    /* Timeline Styles */
+    .timeline {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    .timeline-item {
+        display: flex;
+        gap: 1rem;
+    }
+
+    .time-slot {
+        min-width: 100px;
+        text-align: right;
+    }
+
+    .time {
+        font-weight: 500;
+        color: var(--primary-color);
+    }
+
+    .duration {
+        font-size: 0.875rem;
+        color: var(--text-light);
+    }
+
+    /* Appointment Cards */
+    .appointments-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+        padding: 1rem;
+    }
+
+    .appointment-card {
+        background: var(--white);
+        border-radius: var(--radius-12);
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .card-header {
+        padding: 1rem;
+        background: var(--primary-light);
+        color: var(--white);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .date-badge {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .day {
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+
+    .month {
+        font-size: 0.875rem;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+
+    .patient-details {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .avatar {
+        width: 40px;
+        height: 40px;
+        background: var(--primary-light);
+        color: var(--white);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 500;
+    }
+
+    .appointment-type {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--text-light);
+        margin-bottom: 1rem;
+    }
+
+    .card-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .action-btn {
+        flex: 1;
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: var(--radius-4);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .action-btn.view {
+        background: var(--primary-color);
+        color: var(--white);
+    }
+
+    .action-btn.edit {
+        background: var(--warning-color);
+        color: var(--white);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .calendar-grid {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .timeline-item {
+            flex-direction: column;
+        }
+
+        .time-slot {
+            text-align: left;
+        }
+    }
+</style>
+
+<script>
+    // Add interactive features
+    document.addEventListener('DOMContentLoaded', function() {
+        // Calendar day hover effect
+        const calendarDays = document.querySelectorAll('.calendar-day');
+        calendarDays.forEach(day => {
+            day.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.05)';
+            });
+            day.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+            });
+        });
+
+        // View options toggle
+        const viewButtons = document.querySelectorAll('.view-btn');
+        viewButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                viewButtons.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    });
+</script>
+{% endblock %} 

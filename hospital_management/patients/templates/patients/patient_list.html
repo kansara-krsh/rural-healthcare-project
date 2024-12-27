@@ -1,156 +1,390 @@
+{% extends 'patients/base.html' %}
+
+{% block title %}Patients{% endblock %}
 
 {% block content %}
-<div class="dashboard-container">
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <div class="logo">
-            <h2>HMS</h2>
+<!-- Stats Section -->
+<div class="stats-container" data-reveal="top">
+    <div class="stat-card glass-effect hover-float">
+        <div class="stat-icon">
+            <i class="fas fa-users"></i>
         </div>
-        <nav>
-            <a href="{% url 'patients:dashboard' %}" class="nav-item">
-                <i class="fas fa-home"></i>
-                Dashboard
-            </a>
-            <a href="{% url 'patients:patient_list' %}" class="nav-item active">
-                <i class="fas fa-users"></i>
-                Patients
-            </a>
-            <a href="{% url 'patients:appointment_list' %}" class="nav-item">
-                <i class="fas fa-calendar-check"></i>
-                Appointments
-            </a>
-        </nav>
+        <div class="stat-details">
+            <h3>Total Patients</h3>
+            <p class="stat-number">{{ total_patients }}</p>
+            <div class="stat-chart">
+                <div class="chart-bar" style="width: 85%;"></div>
+            </div>
+            <span class="stat-trend positive">
+                <i class="fas fa-arrow-up"></i> 12% this month
+            </span>
+        </div>
     </div>
 
-    <!-- Main Content -->
-    <main class="main-content">
-        <div class="patient-list-container">
-            <!-- Search Section -->
-            <div class="actions-bar">
-                <div class="search-box">
-                    <form method="GET" action="{% url 'patients:patient_list' %}">
-                        <input type="text" 
-                               name="search" 
-                               placeholder="Search patients by name or phone..." 
-                               value="{{ search_query }}"
-                        >
-                        <button type="submit">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </form>
-                </div>
-            </div>
-
-            <!-- Simplified Patients Table -->
-            <div class="table-container">
-                <table class="patients-table">
-                    <thead>
-                        <tr>
-                            <th>Patient ID</th>
-                            <th>Name</th>
-                            <th>Phone</th>
-                            <th>View Details</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for patient in patients %}
-                        <tr>
-                            <td>{{ patient.id }}</td>
-                            <td>{{ patient.first_name }} {{ patient.last_name }}</td>
-                            <td>{{ patient.phone_number }}</td>
-                            <td>
-                                <a href="{% url 'patients:patient_detail' patient.id %}" class="view-btn">
-                                    View Report
-                                </a>
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="4" class="no-results">No patients found</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+    <div class="stat-card glass-effect hover-float">
+        <div class="stat-icon alert">
+            <i class="fas fa-exclamation-circle"></i>
         </div>
-    </main>
+        <div class="stat-details">
+            <h3>Patient Alerts</h3>
+            <p class="stat-number">{{ patient_alerts.total }}</p>
+            <div class="alerts-list">
+                {% for alert in patient_alerts.details %}
+                <div class="alert-item">
+                    <div class="alert-header">
+                        <span class="patient-name">{{ alert.name }}</span>
+                        <span class="alert-days">{{ alert.days }} days</span>
+                    </div>
+                    <div class="alert-reason">
+                        <i class="fas {% if alert.status == 'pending' %}fa-clock{% else %}fa-calendar-times{% endif %}"></i>
+                        {{ alert.reason }}
+                    </div>
+                    <a href="{% url 'patients:patient_detail' alert.id %}" class="alert-link">
+                        View Details <i class="fas fa-chevron-right"></i>
+                    </a>
+                </div>
+                {% empty %}
+                <div class="no-alerts">
+                    <i class="fas fa-check-circle"></i>
+                    <span>No active alerts</span>
+                </div>
+                {% endfor %}
+            </div>
+            {% if patient_alerts.total > 5 %}
+            <div class="view-all-alerts">
+                <a href="#" class="view-all-link">
+                    View all {{ patient_alerts.total }} alerts
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
 </div>
 
+<!-- Search and Add Section -->
+<div class="search-section glass-effect" data-reveal="bottom">
+    <div class="search-container">
+        <i class="fas fa-search search-icon"></i>
+        <input type="text" 
+               class="search-input"
+               placeholder="Search patients by name, ID or phone..." 
+               value="{{ search_query }}"
+        >
+    </div>
+    <a href="{% url 'patients:add_patient' %}" class="add-patient-btn hover-float">
+        <i class="fas fa-user-plus"></i>
+        <span>Add Patient</span>
+    </a>
+</div>
+
+<!-- Rest of your existing patient list code -->
+
 <style>
-    /* Simplified styles */
-    .patient-list-container {
-        padding: 20px;
+:root {
+    --aqua-light: #E0F7FA;
+    --aqua-main: #4DD0E1;
+    --aqua-dark: #00ACC1;
+    --white: #ffffff;
+    --text-dark: #37474F;
+    --text-light: #78909C;
+    --shadow-1: 0 2px 4px rgba(0, 0, 0, 0.1);
+    --shadow-2: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Stats Container */
+.stats-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    margin: 2rem 0;
+    padding: 0 1rem;
+}
+
+.stat-card {
+    background: var(--white);
+    padding: 1.5rem;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    transition: all 0.3s ease;
+    border: 1px solid var(--aqua-light);
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(77, 208, 225, 0.2);
+}
+
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    background: var(--aqua-light);
+    color: var(--aqua-dark);
+}
+
+.stat-icon.alert {
+    background: #FFE0E0;
+    color: #FF5252;
+}
+
+.stat-details {
+    flex: 1;
+}
+
+.stat-details h3 {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.stat-number {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+}
+
+.stat-chart {
+    height: 4px;
+    background: var(--aqua-light);
+    border-radius: 2px;
+    margin: 0.75rem 0;
+    overflow: hidden;
+}
+
+.chart-bar {
+    height: 100%;
+    background: var(--aqua-main);
+    border-radius: 2px;
+    transition: width 1s ease-in-out;
+}
+
+.stat-trend {
+    font-size: 0.875rem;
+    color: var(--aqua-dark);
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.stat-trend.urgent {
+    color: #FF5252;
+}
+
+/* Search Section */
+.search-section {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    padding: 1rem;
+    margin: 0 1rem 2rem;
+    background: var(--white);
+    border-radius: 12px;
+    border: 1px solid var(--aqua-light);
+}
+
+.search-container {
+    flex: 1;
+    position: relative;
+}
+
+.search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--aqua-main);
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.5rem;
+    border: 2px solid var(--aqua-light);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--aqua-main);
+    box-shadow: 0 0 0 3px rgba(77, 208, 225, 0.1);
+}
+
+.add-patient-btn {
+    background: var(--aqua-main);
+    color: var(--white);
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.add-patient-btn:hover {
+    background: var(--aqua-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(77, 208, 225, 0.2);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .stats-container {
+        grid-template-columns: 1fr;
+        gap: 1rem;
     }
 
-    .search-box {
-        margin-bottom: 24px;
+    .search-section {
+        flex-direction: column;
     }
 
-    .search-box form {
-        display: flex;
-        gap: 10px;
-        max-width: 500px;
-    }
-
-    .search-box input {
-        flex: 1;
-        padding: 12px 16px;
-        border: 1px solid var(--border-color);
-        border-radius: 8px;
-        font-size: 14px;
-    }
-
-    .search-box button {
-        padding: 12px 20px;
-        background: var(--primary-color);
-        color: white;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-    }
-
-    .patients-table {
+    .add-patient-btn {
         width: 100%;
-        border-collapse: collapse;
-        background: white;
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: var(--card-shadow);
+        justify-content: center;
     }
+}
 
-    .patients-table th,
-    .patients-table td {
-        padding: 16px;
-        text-align: left;
-        border-bottom: 1px solid var(--border-color);
-    }
+/* Add these styles to your existing CSS */
+.alerts-list {
+    margin-top: 1rem;
+    max-height: 300px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--aqua-main) var(--aqua-light);
+}
 
-    .patients-table th {
-        background: #f8fafc;
-        font-weight: 600;
-    }
+.alert-item {
+    padding: 0.75rem;
+    background: var(--aqua-light);
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    transition: all 0.3s ease;
+}
 
-    .view-btn {
-        display: inline-block;
-        padding: 8px 16px;
-        background: var(--primary-color);
-        color: white;
-        text-decoration: none;
-        border-radius: 6px;
-        font-size: 14px;
-    }
+.alert-item:hover {
+    background: white;
+    box-shadow: 0 2px 8px rgba(77, 208, 225, 0.2);
+}
 
-    .view-btn:hover {
-        opacity: 0.9;
-    }
+.alert-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.25rem;
+}
 
-    .no-results {
-        text-align: center;
-        color: var(--text-secondary);
-        padding: 32px !important;
-    }
+.patient-name {
+    font-weight: 500;
+    color: var(--text-dark);
+}
+
+.alert-days {
+    font-size: 0.75rem;
+    color: #FF5252;
+    background: #FFE0E0;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+}
+
+.alert-reason {
+    font-size: 0.875rem;
+    color: var(--text-light);
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.alert-link {
+    font-size: 0.875rem;
+    color: var(--aqua-dark);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    transition: gap 0.3s ease;
+}
+
+.alert-link:hover {
+    gap: 0.5rem;
+}
+
+.no-alerts {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-light);
+    padding: 1rem;
+    justify-content: center;
+}
+
+.no-alerts i {
+    color: #4CAF50;
+}
+
+.view-all-alerts {
+    margin-top: 1rem;
+    text-align: center;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--aqua-light);
+}
+
+.view-all-link {
+    color: var(--aqua-dark);
+    text-decoration: none;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: gap 0.3s ease;
+}
+
+.view-all-link:hover {
+    gap: 0.75rem;
+}
+
+/* Update scrollbar styles */
+.alerts-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.alerts-list::-webkit-scrollbar-track {
+    background: var(--aqua-light);
+    border-radius: 3px;
+}
+
+.alerts-list::-webkit-scrollbar-thumb {
+    background: var(--aqua-main);
+    border-radius: 3px;
+}
 </style>
 
-<!-- Add Font Awesome for icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate stat charts on scroll
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.width = entry.target.dataset.percentage;
+            }
+        });
+    });
+
+    document.querySelectorAll('.chart-bar').forEach(bar => {
+        observer.observe(bar);
+    });
+});
+</script>
 {% endblock %} 

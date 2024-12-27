@@ -1,0 +1,144 @@
+{% extends 'patients/base.html' %}
+
+{% block title %}Edit Patient{% endblock %}
+
+{% block content %}
+<div class="page-header" data-reveal="top">
+    <h2 class="gradient-text">Edit Patient Information</h2>
+</div>
+
+<div class="edit-form-container glass-effect" data-reveal="bottom">
+    <form method="POST" class="patient-form">
+        {% csrf_token %}
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="first_name">First Name</label>
+                <input type="text" id="first_name" name="first_name" 
+                       value="{{ patient.first_name }}" required>
+            </div>
+            <div class="form-group">
+                <label for="last_name">Last Name</label>
+                <input type="text" id="last_name" name="last_name" 
+                       value="{{ patient.last_name }}" required>
+            </div>
+            <div class="form-group">
+                <label for="date_of_birth">Date of Birth</label>
+                <input type="date" id="date_of_birth" name="date_of_birth" 
+                       value="{{ patient.date_of_birth|date:'Y-m-d' }}" required>
+            </div>
+            <div class="form-group">
+                <label for="gender">Gender</label>
+                <select id="gender" name="gender" required>
+                    <option value="M" {% if patient.gender == 'M' %}selected{% endif %}>Male</option>
+                    <option value="F" {% if patient.gender == 'F' %}selected{% endif %}>Female</option>
+                    <option value="O" {% if patient.gender == 'O' %}selected{% endif %}>Other</option>
+                </select>
+            </div>
+            <!-- Add more fields similar to the add patient form -->
+        </div>
+
+        <div class="form-actions">
+            <a href="{% url 'patients:patient_detail' patient.id %}" class="cancel-btn hover-float">
+                Cancel
+            </a>
+            <button type="submit" class="submit-btn hover-float">
+                Save Changes
+            </button>
+        </div>
+    </form>
+</div>
+
+<style>
+    .edit-form-container {
+        max-width: 1000px;
+        margin: 2rem auto;
+        padding: 2rem;
+        border-radius: var(--radius-12);
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .form-group label {
+        font-weight: 500;
+        color: var(--text-dark);
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 0.75rem;
+        border: 2px solid var(--border-color);
+        border-radius: var(--radius-8);
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.1);
+        outline: none;
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+    }
+
+    .cancel-btn,
+    .submit-btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: var(--radius-8);
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .cancel-btn {
+        background: var(--light-bg);
+        color: var(--text-dark);
+        border: 2px solid var(--border-color);
+    }
+
+    .submit-btn {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: var(--white);
+        border: none;
+    }
+
+    .cancel-btn:hover,
+    .submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-2);
+    }
+
+    @media (max-width: 768px) {
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .form-actions {
+            flex-direction: column-reverse;
+        }
+
+        .cancel-btn,
+        .submit-btn {
+            width: 100%;
+            text-align: center;
+        }
+    }
+</style>
+{% endblock %} 

@@ -1,0 +1,396 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HMS - {% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: hsl(182, 100%, 35%);
+            --primary-light: hsl(182, 100%, 45%);
+            --secondary-color: hsl(186, 100%, 19%);
+            --white: hsl(0, 0%, 100%);
+            --light-bg: hsl(180, 100%, 97%);
+            --text-dark: hsl(222, 44%, 8%);
+            --text-light: hsl(0, 0%, 60%);
+            --shadow-1: 0px 2px 20px hsla(209, 36%, 72%, 0.2);
+            --shadow-2: 0 0 20px hsla(182, 100%, 35%, 0.1);
+            --radius-12: 12px;
+            --radius-4: 4px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Rubik', sans-serif;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            margin-left: 280px; /* Changed from margin-right to margin-left */
+        }
+
+        /* Left Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0; /* Changed from right to left */
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: linear-gradient(180deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+            box-shadow: var(--shadow-1);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .logo h2 {
+            color: var(--primary-color);
+            font-size: 2rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-radius: var(--radius-12);
+            color: var(--white);
+            text-decoration: none;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-item i {
+            margin-right: 1rem;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: var(--primary-color);
+            color: var(--white);
+        }
+
+        .nav-item:hover i, .nav-item.active i {
+            color: var(--white);
+        }
+
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--white);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-item:hover::before {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        /* Cards and Content */
+        .content-section {
+            background: var(--white);
+            border-radius: var(--radius-12);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-2);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        [data-reveal] {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: var(--transition);
+        }
+
+        [data-reveal].revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .main-content {
+                margin-left: 0; /* Changed from margin-right to margin-left */
+                padding: 1rem;
+            }
+
+            .sidebar {
+                transform: translateX(-100%); /* Changed from 100% to -100% */
+                transition: var(--transition);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .menu-toggle {
+                display: block;
+                position: fixed;
+                left: 1rem; /* Changed from right to left */
+                top: 1rem;
+                z-index: 1001;
+            }
+        }
+
+        /* Modern UI Enhancements */
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .gradient-text {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .card-hover-effect {
+            transition: all 0.3s ease;
+        }
+
+        .card-hover-effect:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Enhanced Sidebar */
+        .sidebar {
+            background: linear-gradient(180deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+        }
+
+        .nav-item {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--white);
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-item:hover::before {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+
+        /* Enhanced Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--light-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-color);
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        /* Notification Badge */
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff4757;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 12px;
+            animation: pulse 2s infinite;
+        }
+    </style>
+    {% block styles %}{% endblock %}
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Move sidebar before main content -->
+        <aside class="sidebar">
+            <div class="logo">
+                <h2>HMS</h2>
+            </div>
+            <nav class="nav-menu">
+                <a href="{% url 'patients:dashboard' %}" class="nav-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                    <i class="fas fa-home"></i>
+                    Dashboard
+                </a>
+                <a href="{% url 'patients:patient_list' %}" class="nav-item {% if request.resolver_match.url_name == 'patient_list' %}active{% endif %}">
+                    <i class="fas fa-users"></i>
+                    Patients
+                </a>
+                <a href="{% url 'patients:appointment_list' %}" class="nav-item {% if request.resolver_match.url_name == 'appointment_list' %}active{% endif %}">
+                    <i class="fas fa-calendar-check"></i>
+                    Appointments
+                </a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+    <script>
+        // Animation Script
+        const revealElements = document.querySelectorAll("[data-reveal]");
+
+        const scrollReveal = function() {
+            for (let i = 0; i < revealElements.length; i++) {
+                const elementIsInScreen = revealElements[i].getBoundingClientRect().top < window.innerHeight / 1.2;
+
+                if (elementIsInScreen) {
+                    revealElements[i].classList.add("revealed");
+                }
+            }
+        }
+
+        window.addEventListener("scroll", scrollReveal);
+        window.addEventListener("load", scrollReveal);
+
+        // Mobile Menu Toggle
+        const menuToggle = document.querySelector('.menu-toggle');
+        const sidebar = document.querySelector('.sidebar');
+
+        if (menuToggle) {
+            menuToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+            });
+        }
+
+        // Enhanced Loading Animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const loadingOverlay = document.createElement('div');
+            loadingOverlay.className = 'loading-overlay';
+            loadingOverlay.innerHTML = '<div class="loading-spinner"></div>';
+            document.body.appendChild(loadingOverlay);
+
+            setTimeout(() => {
+                loadingOverlay.style.opacity = '0';
+                setTimeout(() => {
+                    loadingOverlay.remove();
+                }, 300);
+            }, 500);
+        });
+
+        // Smooth Scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Enhanced Animation Observer
+        const animateOnScroll = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                    if (entry.target.hasAttribute('data-animation')) {
+                        entry.target.style.animationName = entry.target.dataset.animation;
+                    }
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        document.querySelectorAll('[data-reveal], [data-animation]').forEach((el) => {
+            animateOnScroll.observe(el);
+        });
+
+        // Dynamic Theme Colors
+        function setThemeColor(hue) {
+            document.documentElement.style.setProperty('--primary-color', `hsl(${hue}, 100%, 35%)`);
+            document.documentElement.style.setProperty('--secondary-color', `hsl(${hue + 10}, 100%, 19%)`);
+        }
+
+        // Random theme color on load (optional)
+        // setThemeColor(Math.random() * 360);
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
