@@ -1,4 +1,3 @@
-
 # Create your models here.
 from django.db import models
 
@@ -24,11 +23,19 @@ class Patient(models.Model):
         return f"{self.first_name} {self.last_name}"
 
 class Appointment(models.Model):
+    STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Confirmed', 'Confirmed'),
+        ('Completed', 'Completed'),
+        ('Cancelled', 'Cancelled'),
+    ]
+    
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
-    appointment_date = models.DateTimeField()
+    appointment_date = models.DateField()
     reason = models.TextField()
-    notes = models.TextField(blank=True)
+    notes = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
 
     def __str__(self):
-        return f"{self.patient} - {self.appointment_date}"
+        return f"{self.patient.name} - {self.appointment_date}"

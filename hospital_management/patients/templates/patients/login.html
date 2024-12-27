@@ -5,13 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Hospital Management</title>
     <style>
+        :root {
+            /* Import core variables from base template */
+            --verdigris: hsl(182, 100%, 35%);
+            --midnight-green: hsl(186, 100%, 19%);
+            --white: hsl(0, 0%, 100%);
+            --gainsboro: hsl(0, 0%, 87%);
+            --rich-black-fogra-29: hsl(222, 44%, 8%);
+            --radius-12: 12px;
+            --radius-4: 4px;
+            --shadow-1: 0px 2px 20px hsla(209, 36%, 72%, 0.2);
+            --ff-rubik: 'Rubik', sans-serif;
+        }
+
+        body {
+            background-color: var(--rich-black-fogra-29);
+            font-family: var(--ff-rubik);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+        }
+
         .login-container {
+            width: 100%;
             max-width: 400px;
-            margin: 100px auto;
-            padding: 20px;
+            margin: 20px;
+            padding: 40px;
             background-color: var(--white);
             border-radius: var(--radius-12);
             box-shadow: var(--shadow-1);
+        }
+
+        .headline-md {
+            color: var(--midnight-green);
+            font-size: 2.4rem;
+            margin-bottom: 30px;
+            text-align: center;
         }
 
         .login-form {
@@ -21,34 +52,63 @@
         }
 
         .login-form input {
-            padding: 12px;
+            width: 100%;
+            padding: 15px;
             border: 1px solid var(--gainsboro);
             border-radius: var(--radius-4);
+            font-size: 1.6rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .login-form input:focus {
+            border-color: var(--verdigris);
+            outline: none;
         }
 
         .login-form button {
             background-color: var(--verdigris);
             color: var(--white);
-            padding: 12px;
+            padding: 15px;
             border: none;
             border-radius: var(--radius-4);
             cursor: pointer;
+            font-size: 1.6rem;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
         }
 
         .login-form button:hover {
             background-color: var(--midnight-green);
         }
+
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--midnight-green);
+            font-size: 1.4rem;
+        }
+
+        .login-link a {
+            color: var(--verdigris);
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
     <div class="login-container">
-        <h2 class="headline-md text-center">Login</h2>
+        <h2 class="headline-md">Doctor Login</h2>
         <form class="login-form" method="post">
             {% csrf_token %}
             <input type="text" name="username" placeholder="Username" required>
             <input type="password" name="password" placeholder="Password" required>
             <button type="submit">Login</button>
         </form>
+        <p class="login-link">Don't have an account? <a href="{% url 'patients:signup' %}">Sign Up</a></p>
     </div>
 </body>
 </html> 
