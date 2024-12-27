@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Hospital Management</title>
+    <style>
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 20px;
+            background-color: var(--white);
+            border-radius: var(--radius-12);
+            box-shadow: var(--shadow-1);
+        }
+
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .login-form input {
+            padding: 12px;
+            border: 1px solid var(--gainsboro);
+            border-radius: var(--radius-4);
+        }
+
+        .login-form button {
+            background-color: var(--verdigris);
+            color: var(--white);
+            padding: 12px;
+            border: none;
+            border-radius: var(--radius-4);
+            cursor: pointer;
+        }
+
+        .login-form button:hover {
+            background-color: var(--midnight-green);
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2 class="headline-md text-center">Login</h2>
+        <form class="login-form" method="post">
+            {% csrf_token %}
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+</body>
+</html> 
