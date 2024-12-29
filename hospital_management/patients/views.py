@@ -8,6 +8,7 @@ from .models import Patient, Appointment
 from django.utils import timezone
 from datetime import datetime, timedelta
 from django.db.models import Q
+from django.http import JsonResponse
 
 def login_view(request):
     if request.method == 'POST':
@@ -178,13 +179,26 @@ def add_patient(request):
                 gender=request.POST.get('gender'),
                 phone_number=request.POST.get('phone_number'),
                 email=request.POST.get('email'),
-                address=request.POST.get('address'),
-                blood_group=request.POST.get('blood_group'),
-                status='active'  # Set default status as active
+                status='active'
             )
+            
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'success': True,
+                    'patient_id': patient.id,
+                    'message': 'Patient added successfully!'
+                })
+            
             messages.success(request, 'Patient added successfully!')
             return redirect('patients:patient_detail', patient_id=patient.id)
+            
         except Exception as e:
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'success': False,
+                    'error': str(e)
+                })
+            
             messages.error(request, f'Error adding patient: {str(e)}')
             return redirect('patients:add_patient')
     

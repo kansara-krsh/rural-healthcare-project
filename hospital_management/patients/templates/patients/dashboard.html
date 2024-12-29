@@ -3,346 +3,327 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-<div class="content-section" data-reveal>
-    <h2 class="section-title">Overview</h2>
-    <div class="stats-grid">
-        <div class="stat-card">
-            <i class="fas fa-users"></i>
-            <div class="stat-info">
-                <h3>Total Patients</h3>
-                <p>{{ total_patients }}</p>
-            </div>
-        </div>
-        <div class="stat-card">
-            <i class="fas fa-calendar-check"></i>
-            <div class="stat-info">
-                <h3>Today's Appointments</h3>
-                <p>{{ today_appointments }}</p>
-            </div>
-        </div>
-        <div class="stat-card">
-            <i class="fas fa-exclamation-circle"></i>
-            <div class="stat-info">
-                <h3>Patient Alerts</h3>
-                <p>5</p>
-            </div>
+<div class="dashboard-grid" data-reveal>
+    <!-- Village Map Box -->
+    <div class="dashboard-box map-box">
+        <h3 class="box-title">Village Map</h3>
+        <div class="map-container">
+            <!-- Replace YOUR_API_KEY with actual Google Maps API key -->
+            <iframe
+                width="100%"
+                height="100%"
+                frameborder="0"
+                style="border:0"
+                src="https://www.google.com/maps/embed/v1/place?key=YOUR_API_KEY&q=Village+Name"
+                allowfullscreen>
+            </iframe>
         </div>
     </div>
 
-    <!-- Today's Schedule Section -->
-    <div class="schedule-section">
-        <h3 class="sub-title">Today's Schedule</h3>
-        <div class="schedule-timeline">
-            <div class="timeline-item">
-                <div class="time">09:00 AM</div>
-                <div class="appointment-details">
-                    <h4>John Smith</h4>
-                    <p>Regular Checkup</p>
+    <!-- Village Address Box -->
+    <div class="dashboard-box address-box">
+        <h3 class="box-title">Village Details</h3>
+        <div class="address-content">
+            <div class="address-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <div class="address-text">
+                    <h4>Location</h4>
+                    <p>Village Name, District</p>
+                    <p>State, PIN Code</p>
                 </div>
-                <span class="status-badge pending">Pending</span>
             </div>
-            <div class="timeline-item">
-                <div class="time">10:30 AM</div>
-                <div class="appointment-details">
-                    <h4>Sarah Johnson</h4>
-                    <p>Follow-up Visit</p>
+            <div class="address-item">
+                <i class="fas fa-users"></i>
+                <div class="address-text">
+                    <h4>Population</h4>
+                    <p>5,000 Residents</p>
                 </div>
-                <span class="status-badge completed">Completed</span>
             </div>
-            <div class="timeline-item">
-                <div class="time">02:00 PM</div>
-                <div class="appointment-details">
-                    <h4>Mike Davis</h4>
-                    <p>Blood Test Results</p>
+            <div class="address-item">
+                <i class="fas fa-hospital"></i>
+                <div class="address-text">
+                    <h4>Healthcare Facilities</h4>
+                    <p>2 Primary Health Centers</p>
                 </div>
-                <span class="status-badge pending">Pending</span>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Patient Alerts Section -->
-<div class="content-section" data-reveal>
-    <h2 class="section-title">Patient Alerts</h2>
-    <div class="alerts-list">
-        <div class="alert-card urgent">
-            <i class="fas fa-exclamation-triangle"></i>
-            <div class="alert-info">
-                <h4>High Blood Pressure Alert</h4>
-                <p>Patient: Robert Wilson</p>
-                <p class="alert-time">2 hours ago</p>
+    <!-- Environmental Metrics Box -->
+    <div class="dashboard-box metrics-box">
+        <h3 class="box-title">Environmental Metrics</h3>
+        <div class="metrics-grid">
+            <div class="metric-item">
+                <div class="metric-icon">
+                    <i class="fas fa-wind"></i>
+                </div>
+                <div class="metric-info">
+                    <h4>Air Quality Index</h4>
+                    <div class="metric-value" data-value="75">
+                        <span class="counter">0</span>
+                        <span class="unit">AQI</span>
+                    </div>
+                    <span class="metric-status moderate">Moderate</span>
+                </div>
             </div>
-        </div>
-        <div class="alert-card warning">
-            <i class="fas fa-exclamation-circle"></i>
-            <div class="alert-info">
-                <h4>Medication Reminder</h4>
-                <p>Patient: Emily Brown</p>
-                <p class="alert-time">4 hours ago</p>
+            <div class="metric-item">
+                <div class="metric-icon">
+                    <i class="fas fa-temperature-high"></i>
+                </div>
+                <div class="metric-info">
+                    <h4>Temperature</h4>
+                    <div class="metric-value" data-value="28">
+                        <span class="counter">0</span>
+                        <span class="unit">°C</span>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="alert-card info">
-            <i class="fas fa-info-circle"></i>
-            <div class="alert-info">
-                <h4>Lab Results Available</h4>
-                <p>Patient: James Anderson</p>
-                <p class="alert-time">6 hours ago</p>
+            <div class="metric-item">
+                <div class="metric-icon">
+                    <i class="fas fa-tint"></i>
+                </div>
+                <div class="metric-info">
+                    <h4>Humidity</h4>
+                    <div class="metric-value" data-value="65">
+                        <span class="counter">0</span>
+                        <span class="unit">%</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Recent Appointments Section -->
-<div class="content-section" data-reveal>
-    <h2 class="section-title">Recent Appointments</h2>
-    <div class="appointments-list">
-        {% for appointment in recent_appointments %}
-        <div class="appointment-card">
-            <div class="appointment-info">
-                <h4>{{ appointment.patient.first_name }} {{ appointment.patient.last_name }}</h4>
-                <p>{{ appointment.date }} at {{ appointment.time }}</p>
+    <!-- Health Camps Box -->
+    <div class="dashboard-box camps-box">
+        <h3 class="box-title">Upcoming Health Camps</h3>
+        <div class="camps-list">
+            <div class="camp-item">
+                <div class="camp-date">
+                    <span class="date">15</span>
+                    <span class="month">MAY</span>
+                </div>
+                <div class="camp-info">
+                    <h4>General Health Camp</h4>
+                    <p><i class="fas fa-clock"></i> 9:00 AM - 4:00 PM</p>
+                    <p><i class="fas fa-map-pin"></i> Village Community Center</p>
+                </div>
             </div>
-            <span class="status-badge {{ appointment.status|lower }}">
-                {{ appointment.status }}
-            </span>
-        </div>
-        {% empty %}
-        <div class="appointment-card">
-            <div class="appointment-info">
-                <h4>Lisa Thompson</h4>
-                <p>Today at 11:30 AM</p>
+            <div class="camp-item">
+                <div class="camp-date">
+                    <span class="date">22</span>
+                    <span class="month">MAY</span>
+                </div>
+                <div class="camp-info">
+                    <h4>Vaccination Drive</h4>
+                    <p><i class="fas fa-clock"></i> 10:00 AM - 3:00 PM</p>
+                    <p><i class="fas fa-map-pin"></i> Primary Health Center</p>
+                </div>
             </div>
-            <span class="status-badge completed">Completed</span>
-        </div>
-        <div class="appointment-card">
-            <div class="appointment-info">
-                <h4>David Miller</h4>
-                <p>Today at 2:15 PM</p>
-            </div>
-            <span class="status-badge pending">Pending</span>
-        </div>
-        {% endfor %}
-    </div>
-</div>
-
-<!-- Forthcoming Appointments Section -->
-<div class="content-section" data-reveal>
-    <h2 class="section-title">Forthcoming Appointments</h2>
-    <div class="appointments-list">
-        <div class="appointment-card">
-            <div class="appointment-info">
-                <h4>Alice Cooper</h4>
-                <p>Tomorrow at 10:00 AM</p>
-                <span class="appointment-type">Initial Consultation</span>
-            </div>
-            <span class="status-badge scheduled">Scheduled</span>
-        </div>
-        <div class="appointment-card">
-            <div class="appointment-info">
-                <h4>Tom Harris</h4>
-                <p>23 May at 3:30 PM</p>
-                <span class="appointment-type">Follow-up</span>
-            </div>
-            <span class="status-badge scheduled">Scheduled</span>
-        </div>
-        <div class="appointment-card">
-            <div class="appointment-info">
-                <h4>Susan White</h4>
-                <p>24 May at 11:15 AM</p>
-                <span class="appointment-type">Regular Checkup</span>
-            </div>
-            <span class="status-badge scheduled">Scheduled</span>
         </div>
     </div>
 </div>
 
 <style>
-    .stats-grid {
+    .dashboard-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 2rem;
-    }
-
-    .stat-card {
-        background: var(--white);
-        padding: 1.5rem;
-        border-radius: var(--radius-12);
-        box-shadow: var(--shadow-2);
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        transition: var(--transition);
-    }
-
-    .stat-card:hover {
-        transform: translateY(-5px);
-    }
-
-    .stat-card i {
-        font-size: 2rem;
-        color: var(--primary-color);
-    }
-
-    .stat-info h3 {
-        font-size: 1rem;
-        color: var(--text-light);
-        margin-bottom: 0.5rem;
-    }
-
-    .stat-info p {
-        font-size: 1.5rem;
-        font-weight: 500;
-        color: var(--text-dark);
-    }
-
-    .appointments-list {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-    }
-
-    .appointment-card {
-        background: var(--white);
-        padding: 1rem;
-        border-radius: var(--radius-12);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        transition: var(--transition);
-    }
-
-    .appointment-card:hover {
-        transform: translateX(5px);
-        box-shadow: var(--shadow-2);
-    }
-
-    .status-badge {
-        padding: 0.5rem 1rem;
-        border-radius: var(--radius-4);
-        font-size: 0.875rem;
-    }
-
-    .status-badge.pending {
-        background: rgba(255, 159, 28, 0.1);
-        color: #ff9f1c;
-    }
-
-    .status-badge.completed {
-        background: rgba(46, 196, 182, 0.1);
-        color: #2ec4b6;
-    }
-
-    .no-data {
-        text-align: center;
-        color: var(--text-light);
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
         padding: 2rem;
     }
 
-    /* Schedule Timeline Styles */
-    .schedule-section {
-        margin-top: 2rem;
+    .dashboard-box {
+        background: var(--white);
+        border-radius: 15px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 20px rgba(0, 119, 182, 0.1);
+        border: 2px solid #0077B6;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        min-height: 350px;
     }
 
-    .sub-title {
-        color: var(--text-dark);
-        margin-bottom: 1rem;
-        font-size: 1.2rem;
+    .dashboard-box:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 119, 182, 0.2);
     }
 
-    .schedule-timeline {
+    .box-title {
+        color: #0077B6;
+        font-size: 1.25rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid rgba(0, 119, 182, 0.1);
+    }
+
+    /* Map Box Styles */
+    .map-container {
+        height: calc(100% - 50px);
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: inset 0 0 10px rgba(0, 119, 182, 0.1);
+    }
+
+    /* Address Box Styles */
+    .address-content {
         display: flex;
         flex-direction: column;
-        gap: 1rem;
-    }
-
-    .timeline-item {
-        display: flex;
-        align-items: center;
         gap: 1.5rem;
-        background: var(--white);
-        padding: 1rem;
-        border-radius: var(--radius-12);
-        box-shadow: var(--shadow-2);
     }
 
-    .time {
-        min-width: 100px;
-        color: var(--primary-color);
-        font-weight: 500;
-    }
-
-    /* Alert Styles */
-    .alerts-list {
+    .address-item {
         display: flex;
-        flex-direction: column;
+        align-items: flex-start;
         gap: 1rem;
     }
 
-    .alert-card {
+    .address-item i {
+        color: #0077B6;
+        font-size: 1.5rem;
+        padding-top: 0.25rem;
+    }
+
+    /* Metrics Box Styles */
+    .metrics-grid {
+        display: grid;
+        gap: 1.5rem;
+    }
+
+    .metric-item {
         display: flex;
         align-items: center;
         gap: 1rem;
         padding: 1rem;
-        border-radius: var(--radius-12);
-        background: var(--white);
-        box-shadow: var(--shadow-2);
-        transition: var(--transition);
+        background: rgba(0, 119, 182, 0.05);
+        border-radius: 10px;
+        transition: transform 0.3s ease;
     }
 
-    .alert-card:hover {
+    .metric-item:hover {
         transform: translateX(5px);
     }
 
-    .alert-card i {
+    .metric-icon {
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #0077B6;
+        color: white;
+        border-radius: 10px;
         font-size: 1.5rem;
     }
 
-    .alert-card.urgent i {
-        color: #e71d36;
+    .metric-value {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #0077B6;
     }
 
-    .alert-card.warning i {
-        color: #ff9f1c;
+    .metric-status {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 15px;
+        font-size: 0.875rem;
+        background: rgba(0, 119, 182, 0.1);
+        color: #0077B6;
     }
 
-    .alert-card.info i {
-        color: var(--primary-color);
+    /* Health Camps Box Styles */
+    .camps-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
     }
 
-    .alert-info h4 {
+    .camp-item {
+        display: flex;
+        gap: 1rem;
+        padding: 1rem;
+        background: rgba(0, 119, 182, 0.05);
+        border-radius: 10px;
+        transition: transform 0.3s ease;
+    }
+
+    .camp-item:hover {
+        transform: translateX(5px);
+    }
+
+    .camp-date {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-width: 60px;
+        padding: 0.5rem;
+        background: #0077B6;
+        color: white;
+        border-radius: 8px;
+    }
+
+    .camp-date .date {
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
+    .camp-date .month {
+        font-size: 0.875rem;
+    }
+
+    .camp-info h4 {
+        color: #0077B6;
+        margin-bottom: 0.5rem;
+    }
+
+    .camp-info p {
+        font-size: 0.875rem;
+        color: #666;
         margin-bottom: 0.25rem;
     }
 
-    .alert-time {
-        font-size: 0.875rem;
-        color: var(--text-light);
-        margin-top: 0.25rem;
+    .camp-info i {
+        color: #0077B6;
+        margin-right: 0.5rem;
     }
 
-    /* Appointment Type Badge */
-    .appointment-type {
-        display: inline-block;
-        font-size: 0.875rem;
-        color: var(--text-light);
-        margin-top: 0.5rem;
-    }
-
-    .status-badge.scheduled {
-        background: rgba(46, 196, 182, 0.1);
-        color: #2ec4b6;
-    }
-
-    /* Responsive Design */
-    @media (max-width: 768px) {
-        .timeline-item {
-            flex-direction: column;
-            align-items: flex-start;
+    /* Counter Animation */
+    @keyframes countUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
         }
-
-        .time {
-            margin-bottom: 0.5rem;
+        to {
+            opacity: 1;
+            transform: translateY(0);
         }
+    }
+
+    .counter {
+        animation: countUp 1s ease forwards;
     }
 </style>
+
+<script>
+    // Counter animation for metrics
+    document.addEventListener('DOMContentLoaded', function() {
+        const counters = document.querySelectorAll('.counter');
+        
+        counters.forEach(counter => {
+            const target = counter.parentElement.dataset.value;
+            let current = 0;
+            const increment = target / 50;
+            
+            const updateCounter = () => {
+                if (current < target) {
+                    current += increment;
+                    counter.textContent = Math.round(current);
+                    requestAnimationFrame(updateCounter);
+                } else {
+                    counter.textContent = target;
+                }
+            };
+            
+            updateCounter();
+        });
+    });
+</script>
 {% endblock %} 

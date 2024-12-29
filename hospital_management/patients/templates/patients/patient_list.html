@@ -3,118 +3,216 @@
 {% block title %}Patients{% endblock %}
 
 {% block content %}
-<!-- Stats Section -->
-<div class="stats-container" data-reveal="top">
-    <div class="stat-card glass-effect hover-float">
+<!-- Search and Add Patient Section -->
+<div class="top-section" data-reveal="top">
+    <div class="search-container">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="patientSearch" placeholder="Search patients by name, ID or phone...">
+        </div>
+        <button class="add-patient-btn" onclick="openAddPatientModal()">
+            <i class="fas fa-user-plus"></i>
+            Add Patient
+        </button>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="stats-container" data-reveal="bottom">
+    <!-- Total Patients -->
+    <div class="stat-card total">
         <div class="stat-icon">
             <i class="fas fa-users"></i>
         </div>
-        <div class="stat-details">
+        <div class="stat-info">
             <h3>Total Patients</h3>
-            <p class="stat-number">{{ total_patients }}</p>
-            <div class="stat-chart">
-                <div class="chart-bar" style="width: 85%;"></div>
-            </div>
-            <span class="stat-trend positive">
-                <i class="fas fa-arrow-up"></i> 12% this month
-            </span>
+            <div class="stat-number" data-value="{{ total_patients }}">0</div>
+            <p class="stat-trend positive">
+                <i class="fas fa-arrow-up"></i>
+                <span>12% increase</span>
+            </p>
         </div>
     </div>
 
-    <div class="stat-card glass-effect hover-float">
-        <div class="stat-icon alert">
-            <i class="fas fa-exclamation-circle"></i>
+    <!-- Critical Patients -->
+    <div class="stat-card critical">
+        <div class="stat-icon">
+            <i class="fas fa-procedures"></i>
         </div>
-        <div class="stat-details">
-            <h3>Patient Alerts</h3>
-            <p class="stat-number">{{ patient_alerts.total }}</p>
-            <div class="alerts-list">
-                {% for alert in patient_alerts.details %}
-                <div class="alert-item">
-                    <div class="alert-header">
-                        <span class="patient-name">{{ alert.name }}</span>
-                        <span class="alert-days">{{ alert.days }} days</span>
-                    </div>
-                    <div class="alert-reason">
-                        <i class="fas {% if alert.status == 'pending' %}fa-clock{% else %}fa-calendar-times{% endif %}"></i>
-                        {{ alert.reason }}
-                    </div>
-                    <a href="{% url 'patients:patient_detail' alert.id %}" class="alert-link">
-                        View Details <i class="fas fa-chevron-right"></i>
-                    </a>
-                </div>
-                {% empty %}
-                <div class="no-alerts">
-                    <i class="fas fa-check-circle"></i>
-                    <span>No active alerts</span>
-                </div>
-                {% endfor %}
-            </div>
-            {% if patient_alerts.total > 5 %}
-            <div class="view-all-alerts">
-                <a href="#" class="view-all-link">
-                    View all {{ patient_alerts.total }} alerts
-                    <i class="fas fa-arrow-right"></i>
-                </a>
-            </div>
-            {% endif %}
+        <div class="stat-info">
+            <h3>Critical Patients</h3>
+            <div class="stat-number" data-value="8">0</div>
+            <p class="stat-trend negative">
+                <i class="fas fa-arrow-up"></i>
+                <span>3 new cases</span>
+            </p>
+        </div>
+    </div>
+
+    <!-- Active Patients -->
+    <div class="stat-card active">
+        <div class="stat-icon">
+            <i class="fas fa-heartbeat"></i>
+        </div>
+        <div class="stat-info">
+            <h3>Active Patients</h3>
+            <div class="stat-number" data-value="{{ active_patients }}">0</div>
+            <p class="stat-trend positive">
+                <i class="fas fa-check-circle"></i>
+                <span>All stable</span>
+            </p>
         </div>
     </div>
 </div>
 
-<!-- Search and Add Section -->
-<div class="search-section glass-effect" data-reveal="bottom">
-    <div class="search-container">
-        <i class="fas fa-search search-icon"></i>
-        <input type="text" 
-               class="search-input"
-               placeholder="Search patients by name, ID or phone..." 
-               value="{{ search_query }}"
-        >
+<!-- Add Patient Modal -->
+<div id="addPatientModal" class="modal">
+    <div class="modal-content glass-effect">
+        <div class="modal-header">
+            <h3>Add New Patient</h3>
+            <span class="close-modal">&times;</span>
+        </div>
+        <form id="addPatientForm" method="POST" action="{% url 'patients:add_patient' %}">
+            {% csrf_token %}
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="first_name">First Name</label>
+                    <input type="text" id="first_name" name="first_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="last_name">Last Name</label>
+                    <input type="text" id="last_name" name="last_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="date_of_birth">Date of Birth</label>
+                    <input type="date" id="date_of_birth" name="date_of_birth" required>
+                </div>
+                <div class="form-group">
+                    <label for="gender">Gender</label>
+                    <select id="gender" name="gender" required>
+                        <option value="">Select Gender</option>
+                        <option value="M">Male</option>
+                        <option value="F">Female</option>
+                        <option value="O">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="phone_number">Phone Number</label>
+                    <input type="tel" id="phone_number" name="phone_number" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email">
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="submit-btn hover-float">Add Patient</button>
+            </div>
+        </form>
     </div>
-    <a href="{% url 'patients:add_patient' %}" class="add-patient-btn hover-float">
-        <i class="fas fa-user-plus"></i>
-        <span>Add Patient</span>
-    </a>
 </div>
-
-<!-- Rest of your existing patient list code -->
 
 <style>
-:root {
-    --aqua-light: #E0F7FA;
-    --aqua-main: #4DD0E1;
-    --aqua-dark: #00ACC1;
-    --white: #ffffff;
-    --text-dark: #37474F;
-    --text-light: #78909C;
-    --shadow-1: 0 2px 4px rgba(0, 0, 0, 0.1);
-    --shadow-2: 0 4px 8px rgba(0, 0, 0, 0.1);
+/* Top Section Styles */
+.top-section {
+    margin-bottom: 2rem;
+    padding: 1rem;
 }
 
-/* Stats Container */
+.search-container {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.search-box {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    background: var(--white);
+    border: 2px solid #0077B6;
+    border-radius: 10px;
+    padding: 0.75rem 1.5rem;
+    box-shadow: 0 4px 15px rgba(0, 119, 182, 0.1);
+    transition: all 0.3s ease;
+}
+
+.search-box:focus-within {
+    box-shadow: 0 4px 20px rgba(0, 119, 182, 0.2);
+    transform: translateY(-2px);
+}
+
+.search-box i {
+    color: #0077B6;
+    font-size: 1.2rem;
+    margin-right: 1rem;
+}
+
+.search-box input {
+    border: none;
+    outline: none;
+    width: 100%;
+    font-size: 1rem;
+}
+
+.add-patient-btn {
+    background: #0077B6;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 0.75rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 119, 182, 0.2);
+}
+
+.add-patient-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 119, 182, 0.3);
+}
+
+/* Stats Container Styles */
 .stats-container {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 2rem;
-    margin: 2rem 0;
-    padding: 0 1rem;
+    padding: 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .stat-card {
     background: var(--white);
+    border-radius: 15px;
     padding: 1.5rem;
-    border-radius: 12px;
     display: flex;
-    align-items: center;
     gap: 1.5rem;
+    align-items: center;
     transition: all 0.3s ease;
-    border: 1px solid var(--aqua-light);
+    border: 2px solid #0077B6;
+}
+
+.stat-card.total {
+    border-color: #00B4D8;
+}
+
+.stat-card.critical {
+    border-color: #FF4B4B;
+}
+
+.stat-card.active {
+    border-color: #4CAF50;
 }
 
 .stat-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(77, 208, 225, 0.2);
 }
 
 .stat-icon {
@@ -124,266 +222,222 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.5rem;
-    background: var(--aqua-light);
-    color: var(--aqua-dark);
+    font-size: 1.8rem;
 }
 
-.stat-icon.alert {
-    background: #FFE0E0;
-    color: #FF5252;
+.total .stat-icon {
+    background: rgba(0, 180, 216, 0.1);
+    color: #00B4D8;
 }
 
-.stat-details {
-    flex: 1;
+.critical .stat-icon {
+    background: rgba(255, 75, 75, 0.1);
+    color: #FF4B4B;
 }
 
-.stat-details h3 {
-    color: var(--text-light);
-    font-size: 0.9rem;
+.active .stat-icon {
+    background: rgba(76, 175, 80, 0.1);
+    color: #4CAF50;
+}
+
+.stat-info h3 {
+    font-size: 1rem;
+    color: #666;
     margin-bottom: 0.5rem;
 }
 
 .stat-number {
-    font-size: 1.75rem;
-    font-weight: 600;
-    color: var(--text-dark);
+    font-size: 2rem;
+    font-weight: bold;
     margin-bottom: 0.5rem;
 }
 
-.stat-chart {
-    height: 4px;
-    background: var(--aqua-light);
-    border-radius: 2px;
-    margin: 0.75rem 0;
-    overflow: hidden;
+.total .stat-number {
+    color: #00B4D8;
 }
 
-.chart-bar {
-    height: 100%;
-    background: var(--aqua-main);
-    border-radius: 2px;
-    transition: width 1s ease-in-out;
+.critical .stat-number {
+    color: #FF4B4B;
+}
+
+.active .stat-number {
+    color: #4CAF50;
 }
 
 .stat-trend {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     font-size: 0.875rem;
-    color: var(--aqua-dark);
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
 }
 
-.stat-trend.urgent {
-    color: #FF5252;
+.stat-trend.positive {
+    color: #4CAF50;
 }
 
-/* Search Section */
-.search-section {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    padding: 1rem;
-    margin: 0 1rem 2rem;
-    background: var(--white);
-    border-radius: 12px;
-    border: 1px solid var(--aqua-light);
+.stat-trend.negative {
+    color: #FF4B4B;
 }
 
-.search-container {
-    flex: 1;
-    position: relative;
+/* Animation */
+@keyframes countUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-.search-icon {
-    position: absolute;
-    left: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--aqua-main);
+.stat-number {
+    animation: countUp 1s ease forwards;
 }
 
-.search-input {
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
-    padding: 0.75rem 1rem 0.75rem 2.5rem;
-    border: 2px solid var(--aqua-light);
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+    position: relative;
+    width: 90%;
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 2rem;
+    border-radius: 15px;
+    animation: slideIn 0.3s ease;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.close-modal {
+    font-size: 1.8rem;
+    cursor: pointer;
+    color: var(--text-light);
+    transition: color 0.3s ease;
+}
+
+.close-modal:hover {
+    color: var(--text-dark);
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-group input,
+.form-group select {
+    padding: 0.75rem;
+    border: 2px solid var(--border-color);
     border-radius: 8px;
     font-size: 1rem;
     transition: all 0.3s ease;
 }
 
-.search-input:focus {
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #0077B6;
+    box-shadow: 0 0 0 3px rgba(0, 119, 182, 0.1);
     outline: none;
-    border-color: var(--aqua-main);
-    box-shadow: 0 0 0 3px rgba(77, 208, 225, 0.1);
 }
 
-.add-patient-btn {
-    background: var(--aqua-main);
-    color: var(--white);
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    transition: all 0.3s ease;
-    border: none;
-    cursor: pointer;
-}
-
-.add-patient-btn:hover {
-    background: var(--aqua-dark);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(77, 208, 225, 0.2);
-}
-
-/* Responsive Design */
 @media (max-width: 768px) {
-    .stats-container {
+    .form-grid {
         grid-template-columns: 1fr;
-        gap: 1rem;
     }
-
-    .search-section {
-        flex-direction: column;
-    }
-
-    .add-patient-btn {
-        width: 100%;
-        justify-content: center;
-    }
-}
-
-/* Add these styles to your existing CSS */
-.alerts-list {
-    margin-top: 1rem;
-    max-height: 300px;
-    overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: var(--aqua-main) var(--aqua-light);
-}
-
-.alert-item {
-    padding: 0.75rem;
-    background: var(--aqua-light);
-    border-radius: 8px;
-    margin-bottom: 0.5rem;
-    transition: all 0.3s ease;
-}
-
-.alert-item:hover {
-    background: white;
-    box-shadow: 0 2px 8px rgba(77, 208, 225, 0.2);
-}
-
-.alert-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.25rem;
-}
-
-.patient-name {
-    font-weight: 500;
-    color: var(--text-dark);
-}
-
-.alert-days {
-    font-size: 0.75rem;
-    color: #FF5252;
-    background: #FFE0E0;
-    padding: 0.25rem 0.5rem;
-    border-radius: 12px;
-}
-
-.alert-reason {
-    font-size: 0.875rem;
-    color: var(--text-light);
-    margin-bottom: 0.5rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.alert-link {
-    font-size: 0.875rem;
-    color: var(--aqua-dark);
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    transition: gap 0.3s ease;
-}
-
-.alert-link:hover {
-    gap: 0.5rem;
-}
-
-.no-alerts {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: var(--text-light);
-    padding: 1rem;
-    justify-content: center;
-}
-
-.no-alerts i {
-    color: #4CAF50;
-}
-
-.view-all-alerts {
-    margin-top: 1rem;
-    text-align: center;
-    padding-top: 0.5rem;
-    border-top: 1px solid var(--aqua-light);
-}
-
-.view-all-link {
-    color: var(--aqua-dark);
-    text-decoration: none;
-    font-size: 0.875rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    transition: gap 0.3s ease;
-}
-
-.view-all-link:hover {
-    gap: 0.75rem;
-}
-
-/* Update scrollbar styles */
-.alerts-list::-webkit-scrollbar {
-    width: 6px;
-}
-
-.alerts-list::-webkit-scrollbar-track {
-    background: var(--aqua-light);
-    border-radius: 3px;
-}
-
-.alerts-list::-webkit-scrollbar-thumb {
-    background: var(--aqua-main);
-    border-radius: 3px;
 }
 </style>
 
 <script>
+// Counter animation
 document.addEventListener('DOMContentLoaded', function() {
-    // Animate stat charts on scroll
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.width = entry.target.dataset.percentage;
+    const counters = document.querySelectorAll('.stat-number');
+    
+    counters.forEach(counter => {
+        const target = counter.dataset.value;
+        let current = 0;
+        const increment = target / 50;
+        
+        const updateCounter = () => {
+            if (current < target) {
+                current += increment;
+                counter.textContent = Math.round(current);
+                requestAnimationFrame(updateCounter);
+            } else {
+                counter.textContent = target;
             }
-        });
+        };
+        
+        updateCounter();
     });
+});
 
-    document.querySelectorAll('.chart-bar').forEach(bar => {
-        observer.observe(bar);
+// Search functionality
+document.getElementById('patientSearch').addEventListener('input', function(e) {
+    const searchTerm = e.target.value.toLowerCase();
+    // Add your search logic here
+});
+
+function openAddPatientModal() {
+    const modal = document.getElementById('addPatientModal');
+    modal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+}
+
+document.querySelector('.close-modal').addEventListener('click', function() {
+    const modal = document.getElementById('addPatientModal');
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+});
+
+document.getElementById('addPatientForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    
+    fetch(this.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Show success message and close modal
+            alert('Patient added successfully!');
+            location.reload();
+        } else {
+            // Show error message
+            alert(data.error || 'Error adding patient');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error adding patient');
     });
 });
 </script>
