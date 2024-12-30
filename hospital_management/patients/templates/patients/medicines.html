@@ -1,0 +1,994 @@
+{% extends 'patients/base.html' %}
+{% load static %}
+
+{% block title %}Medicines{% endblock %}
+
+{% block content %}
+<div class="medicines-container">
+    <div class="medicines-header glass-effect" data-reveal="top">
+        <h2><i class="fas fa-clinic-medical"></i>Medicines Inventory</h2>
+        <div class="medicines-stats">
+            <div class="stat-card total-medicines">
+                <div class="stat-icon">
+                    <i class="fas fa-pills"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-label">Total Medicines</span>
+                    <span class="stat-value counter">{{ medicines|length }}</span>
+                    <span class="stat-trend positive">
+                        <i class="fas fa-arrow-up"></i> 12% this month
+                    </span>
+                </div>
+            </div>
+            
+            <div class="stat-card in-stock">
+                <div class="stat-icon">
+                    <i class="fas fa-box-open"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-label">In Stock</span>
+                    <span class="stat-value counter">150</span>
+                    <span class="stat-trend positive">
+                        <i class="fas fa-arrow-up"></i> 8% this week
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="medicines-grid">
+        <div class="medicine-card theme-blue glass-effect">
+            <div class="medicine-image-container">
+                <i class="fas fa-pills medicine-icon"></i>
+            </div>
+            <div class="medicine-info">
+                <h3 class="medicine-name">Paracetamol</h3>
+                <p class="medicine-volume">500mg</p>
+                <p class="medicine-price">$5.99</p>
+                <button class="view-details-btn" onclick="toggleDetails(this)">
+                    <i class="fas fa-info-circle"></i> View Details
+                </button>
+            </div>
+            <div class="medicine-details">
+                <div class="details-section">
+                    <h4><i class="fas fa-info-circle"></i> Description</h4>
+                    <p>A common pain reliever and fever reducer. Effective for headaches, muscle aches, and fever.</p>
+                </div>
+                <div class="details-section">
+                    <h4><i class="fas fa-clipboard-list"></i> Usage Instructions</h4>
+                    <p>Take 1-2 tablets every 4-6 hours as needed. Do not exceed 8 tablets in 24 hours.</p>
+                </div>
+                <div class="details-section">
+                    <h4><i class="fas fa-exclamation-circle"></i> Side Effects</h4>
+                    <ul>
+                        <li>Nausea</li>
+                        <li>Stomach pain</li>
+                        <li>Loss of appetite</li>
+                        <li>Headache</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="medicine-card theme-green glass-effect">
+            <div class="medicine-image-container">
+                <i class="fas fa-capsules medicine-icon"></i>
+            </div>
+            <div class="medicine-info">
+                <h3 class="medicine-name">Amoxicillin</h3>
+                <p class="medicine-volume">250mg</p>
+                <p class="medicine-price">$8.99</p>
+                <button class="view-details-btn" onclick="toggleDetails(this)">
+                    <i class="fas fa-info-circle"></i> View Details
+                </button>
+            </div>
+            <div class="medicine-details">
+                <div class="details-section">
+                    <h4><i class="fas fa-info-circle"></i> Description</h4>
+                    <p>An antibiotic used to treat various bacterial infections.</p>
+                </div>
+                <div class="details-section">
+                    <h4><i class="fas fa-clipboard-list"></i> Usage Instructions</h4>
+                    <p>Take three times daily with meals. Complete the full course as prescribed.</p>
+                </div>
+                <div class="details-section">
+                    <h4><i class="fas fa-exclamation-circle"></i> Side Effects</h4>
+                    <ul>
+                        <li>Diarrhea</li>
+                        <li>Nausea</li>
+                        <li>Rash</li>
+                        <li>Stomach pain</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Aspirin -->
+        <div class="medicine-card theme-red glass-effect">
+            <div class="medicine-image-container">
+                <i class="fas fa-tablets medicine-icon"></i>
+            </div>
+            <div class="medicine-info">
+                <h3 class="medicine-name">Aspirin</h3>
+                <p class="medicine-volume">325mg</p>
+                <p class="medicine-price">$6.99</p>
+                <button class="view-details-btn" onclick="toggleDetails(this)">
+                    <i class="fas fa-info-circle"></i> View Details
+                </button>
+            </div>
+            <div class="medicine-details">
+                <div class="details-section">
+                    <h4><i class="fas fa-info-circle"></i> Description</h4>
+                    <p>A common pain reliever and blood thinner. Used to treat pain, fever, and inflammation. Also prescribed for heart attack prevention.</p>
+                </div>
+                <div class="details-section">
+                    <h4><i class="fas fa-clipboard-list"></i> Usage Instructions</h4>
+                    <p>Take 1-2 tablets every 4-6 hours with food. Do not exceed 12 tablets in 24 hours. Take with water.</p>
+                </div>
+                <div class="details-section">
+                    <h4><i class="fas fa-exclamation-circle"></i> Side Effects</h4>
+                    <ul>
+                        <li>Stomach irritation</li>
+                        <li>Heartburn</li>
+                        <li>Easy bruising/bleeding</li>
+                        <li>Ringing in ears</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loratadine -->
+        <div class="medicine-card theme-purple glass-effect">
+            <div class="medicine-image-container">
+                <i class="fas fa-prescription-bottle medicine-icon"></i>
+            </div>
+            <div class="medicine-info">
+                <h3 class="medicine-name">Loratadine</h3>
+                <p class="medicine-volume">10mg</p>
+                <p class="medicine-price">$7.49</p>
+                <button class="view-details-btn" onclick="toggleDetails(this)">
+                    <i class="fas fa-info-circle"></i> View Details
+                </button>
+            </div>
+            <div class="medicine-details">
+                <div class="details-section">
+                    <h4><i class="fas fa-info-circle"></i> Description</h4>
+                    <p>A non-drowsy antihistamine that relieves allergy symptoms such as sneezing, runny nose, and itchy eyes.</p>
+                </div>
+                <div class="details-section">
+                    <h4><i class="fas fa-clipboard-list"></i> Usage Instructions</h4>
+                    <p>Take one tablet daily. Can be taken with or without food. Best taken in the morning.</p>
+                </div>
+                <div class="details-section">
+                    <h4><i class="fas fa-exclamation-circle"></i> Side Effects</h4>
+                    <ul>
+                        <li>Headache</li>
+                        <li>Dry mouth</li>
+                        <li>Mild fatigue</li>
+                        <li>Stomach upset</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pantoprazole -->
+        <div class="medicine-card theme-teal glass-effect">
+            <div class="medicine-image-container">
+                <i class="fas fa-capsules medicine-icon"></i>
+            </div>
+            <div class="medicine-info">
+                <h3 class="medicine-name">Pantoprazole</h3>
+                <p class="medicine-volume">40mg</p>
+                <p class="medicine-price">$13.99</p>
+                <button class="view-details-btn" onclick="toggleDetails(this)">
+                    <i class="fas fa-info-circle"></i> View Details
+                </button>
+            </div>
+            <div class="medicine-details">
+                <div class="details-section">
+                    <h4><i class="fas fa-info-circle"></i> Description</h4>
+                    <p>A proton pump inhibitor that reduces stomach acid production. Used for treating acid reflux, ulcers, and other digestive conditions.</p>
+                </div>
+                <div class="details-section">
+                    <h4><i class="fas fa-clipboard-list"></i> Usage Instructions</h4>
+                    <p>Take one tablet daily before breakfast. Swallow whole, do not crush or chew. Take for prescribed duration.</p>
+                </div>
+                <div class="details-section">
+                    <h4><i class="fas fa-exclamation-circle"></i> Side Effects</h4>
+                    <ul>
+                        <li>Headache</li>
+                        <li>Diarrhea</li>
+                        <li>Joint pain</li>
+                        <li>Vitamin B12 deficiency</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Montelukast -->
+        <div class="medicine-card theme-orange glass-effect">
+            <div class="medicine-image-container">
+                <i class="fas fa-pills medicine-icon"></i>
+            </div>
+            <div class="medicine-info">
+                <h3 class="medicine-name">Montelukast</h3>
+                <p class="medicine-volume">10mg</p>
+                <p class="medicine-price">$15.99</p>
+                <button class="view-details-btn" onclick="toggleDetails(this)">
+                    <i class="fas fa-info-circle"></i> View Details
+                </button>
+            </div>
+            <div class="medicine-details">
+                <div class="details-section">
+                    <h4><i class="fas fa-info-circle"></i> Description</h4>
+                    <p>A leukotriene receptor antagonist used to prevent asthma attacks and manage seasonal allergies.</p>
+                </div>
+                <div class="details-section">
+                    <h4><i class="fas fa-clipboard-list"></i> Usage Instructions</h4>
+                    <p>Take one tablet in the evening, with or without food. For asthma, take regularly even when symptom-free.</p>
+                </div>
+                <div class="details-section">
+                    <h4><i class="fas fa-exclamation-circle"></i> Side Effects</h4>
+                    <ul>
+                        <li>Headache</li>
+                        <li>Mood changes</li>
+                        <li>Sleep problems</li>
+                        <li>Upper respiratory infection</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add more medicines with the same structure -->
+        <!-- Each additional medicine follows the same pattern -->
+    </div>
+</div>
+
+<style>
+/* Base styles for medicine cards */
+.medicines-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    padding: 20px;
+}
+
+/* Add these new styles for medicine themes */
+.medicine-card {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s ease;
+}
+
+/* Theme colors for different medicines */
+.medicine-theme-1 {
+    background: linear-gradient(145deg, #e3f2fd, #bbdefb);
+    border-left: 5px solid #1976d2;
+}
+
+.medicine-theme-2 {
+    background: linear-gradient(145deg, #f3e5f5, #e1bee7);
+    border-left: 5px solid #7b1fa2;
+}
+
+.medicine-theme-3 {
+    background: linear-gradient(145deg, #e8f5e9, #c8e6c9);
+    border-left: 5px solid #388e3c;
+}
+
+.medicine-theme-4 {
+    background: linear-gradient(145deg, #fff3e0, #ffe0b2);
+    border-left: 5px solid #f57c00;
+}
+
+.medicine-theme-5 {
+    background: linear-gradient(145deg, #fce4ec, #f8bbd0);
+    border-left: 5px solid #c2185b;
+}
+
+.medicine-theme-6 {
+    background: linear-gradient(145deg, #e0f7fa, #b2ebf2);
+    border-left: 5px solid #0097a7;
+}
+
+.medicine-theme-7 {
+    background: linear-gradient(145deg, #f1f8e9, #dcedc8);
+    border-left: 5px solid #689f38;
+}
+
+.medicine-theme-8 {
+    background: linear-gradient(145deg, #ede7f6, #d1c4e9);
+    border-left: 5px solid #512da8;
+}
+
+/* Updated medicine-image-container */
+.medicine-image-container {
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 15px;
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(5px);
+}
+
+.medicine-icon {
+    font-size: 3em;
+    color: rgba(0, 0, 0, 0.5);
+    animation: pulse 2s infinite;
+}
+
+/* Enhanced animations */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.medicine-card:hover {
+    transform: translateY(-10px) rotate(1deg);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.medicine-info {
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
+    border-radius: 15px;
+}
+
+.medicine-name {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    color: rgba(0, 0, 0, 0.8);
+    text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
+}
+
+.medicine-volume {
+    display: inline-block;
+    padding: 5px 15px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 20px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.medicine-price {
+    font-size: 1.3em;
+    font-weight: 700;
+    color: rgba(0, 0, 0, 0.7);
+    margin-bottom: 15px;
+}
+
+/* Updated view-details button */
+.view-details-btn {
+    background: rgba(255, 255, 255, 0.3);
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    padding: 10px 20px;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+.view-details-btn:hover {
+    background: rgba(255, 255, 255, 0.5);
+    transform: translateX(5px);
+}
+
+/* Details section styling */
+.medicine-details {
+    display: none;
+    padding: 25px;
+    margin-top: 20px;
+    background: var(--theme-light);
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    border: 2px solid var(--theme-color);
+    position: relative;
+    overflow: hidden;
+}
+
+.medicine-details.active {
+    display: block;
+    animation: slideDown 0.4s ease-out;
+}
+
+/* Description Section */
+.details-section {
+    background: white;
+    margin-bottom: 20px;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+    border: 2px solid var(--theme-color);
+    position: relative;
+}
+
+.details-section:hover {
+    transform: translateX(10px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.details-section h4 {
+    background: var(--theme-color);
+    color: white;
+    padding: 15px 20px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.1em;
+    letter-spacing: 0.5px;
+}
+
+.details-section h4 i {
+    font-size: 1.2em;
+}
+
+.details-section > p {
+    padding: 20px;
+    margin: 0;
+    line-height: 1.6;
+    color: #444;
+}
+
+/* Description Section Specific */
+.details-section:nth-child(1) {
+    border-color: var(--theme-color);
+}
+
+.details-section:nth-child(1) h4 {
+    background: var(--theme-color);
+}
+
+/* Usage Instructions Section Specific */
+.details-section:nth-child(2) {
+    border-color: #2ecc71;
+}
+
+.details-section:nth-child(2) h4 {
+    background: #2ecc71;
+}
+
+/* Side Effects Section Specific */
+.details-section:nth-child(3) {
+    border-color: #e74c3c;
+}
+
+.details-section:nth-child(3) h4 {
+    background: #e74c3c;
+}
+
+/* Enhanced List Styling */
+.details-section ul {
+    list-style: none;
+    padding: 20px;
+    margin: 0;
+}
+
+.details-section li {
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    background: var(--theme-light);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+    border-left: 4px solid var(--theme-color);
+}
+
+.details-section:nth-child(3) li {
+    border-left-color: #e74c3c;
+    background: #fff5f5;
+}
+
+.details-section li:hover {
+    transform: translateX(10px);
+    background: white;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.details-section li::before {
+    content: '•';
+    color: var(--theme-color);
+    margin-right: 10px;
+    font-size: 1.5em;
+    line-height: 0;
+}
+
+/* Decorative Elements */
+.details-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 20px;
+    height: 20px;
+    background: var(--theme-color);
+    opacity: 0.1;
+    border-radius: 0 0 0 20px;
+}
+
+/* Animations */
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .medicine-details {
+        padding: 15px;
+    }
+
+    .details-section h4 {
+        padding: 12px 15px;
+        font-size: 1em;
+    }
+
+    .details-section > p {
+        padding: 15px;
+    }
+
+    .details-section li {
+        padding: 8px 12px;
+        margin-bottom: 8px;
+    }
+}
+
+/* Add hover effect for better interactivity */
+.details-section:hover::before {
+    animation: rotate 0.5s ease-in-out;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(90deg);
+    }
+}
+
+/* Add subtle gradient overlay */
+.details-section::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        45deg,
+        rgba(255, 255, 255, 0.1) 0%,
+        rgba(255, 255, 255, 0.05) 100%
+    );
+    pointer-events: none;
+}
+
+/* Add these new theme classes */
+.theme-blue {
+    --theme-color: #0077B6;
+    --theme-light: #e1f5fe;
+    --theme-gradient: linear-gradient(135deg, #e1f5fe 0%, #ffffff 100%);
+}
+
+.theme-green {
+    --theme-color: #2ecc71;
+    --theme-light: #e8f5e9;
+    --theme-gradient: linear-gradient(135deg, #e8f5e9 0%, #ffffff 100%);
+}
+
+.theme-purple {
+    --theme-color: #9b59b6;
+    --theme-light: #f3e5f5;
+    --theme-gradient: linear-gradient(135deg, #f3e5f5 0%, #ffffff 100%);
+}
+
+.theme-orange {
+    --theme-color: #e67e22;
+    --theme-light: #fff3e0;
+    --theme-gradient: linear-gradient(135deg, #fff3e0 0%, #ffffff 100%);
+}
+
+.theme-red {
+    --theme-color: #e74c3c;
+    --theme-light: #ffebee;
+    --theme-gradient: linear-gradient(135deg, #ffebee 0%, #ffffff 100%);
+}
+
+.theme-teal {
+    --theme-color: #009688;
+    --theme-light: #e0f2f1;
+    --theme-gradient: linear-gradient(135deg, #e0f2f1 0%, #ffffff 100%);
+}
+
+/* Updated medicine card styling */
+.medicine-card {
+    background: var(--theme-gradient);
+    border: 2px solid var(--theme-color);
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.medicine-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.medicine-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: var(--theme-color);
+}
+
+.medicine-image-container {
+    background: var(--theme-light);
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.medicine-icon {
+    font-size: 4em;
+    color: var(--theme-color);
+    animation: pulse 2s infinite;
+}
+
+.medicine-info {
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.9);
+}
+
+.medicine-name {
+    color: var(--theme-color);
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    position: relative;
+    display: inline-block;
+}
+
+.medicine-name::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--theme-color);
+    transition: width 0.3s ease;
+}
+
+.medicine-card:hover .medicine-name::after {
+    width: 100%;
+}
+
+.medicine-volume {
+    display: inline-block;
+    background: var(--theme-light);
+    color: var(--theme-color);
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.medicine-price {
+    font-size: 1.4em;
+    color: var(--theme-color);
+    font-weight: 700;
+    margin: 15px 0;
+}
+
+.view-details-btn {
+    background: transparent;
+    color: var(--theme-color);
+    border: 2px solid var(--theme-color);
+    transition: all 0.3s ease;
+}
+
+.view-details-btn:hover {
+    background: var(--theme-color);
+    color: white;
+    transform: translateX(5px);
+}
+
+/* Animations */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Add these new styles for enhanced header */
+.medicines-header {
+    background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%);
+    padding: 30px;
+    border-radius: 20px;
+    margin-bottom: 40px;
+    border: 1px solid rgba(0, 119, 182, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 119, 182, 0.1);
+}
+
+.medicines-header h2 {
+    color: #0077B6;
+    font-size: 2em;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid rgba(0, 119, 182, 0.1);
+}
+
+.medicines-header h2 i {
+    font-size: 1.2em;
+    color: #0077B6;
+}
+
+.medicines-stats {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.stat-card {
+    flex: 1;
+    min-width: 250px;
+    background: white;
+    padding: 25px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Different styles for each stat card */
+.total-medicines {
+    background: linear-gradient(135deg, #e1f5fe 0%, #ffffff 100%);
+    border-color: #0077B6;
+}
+
+.in-stock {
+    background: linear-gradient(135deg, #e8f5e9 0%, #ffffff 100%);
+    border-color: #2ecc71;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.stat-icon {
+    background: rgba(0, 119, 182, 0.1);
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.total-medicines .stat-icon {
+    background: rgba(0, 119, 182, 0.1);
+}
+
+.in-stock .stat-icon {
+    background: rgba(46, 204, 113, 0.1);
+}
+
+.stat-icon i {
+    font-size: 1.8em;
+    color: #0077B6;
+}
+
+.in-stock .stat-icon i {
+    color: #2ecc71;
+}
+
+.stat-info {
+    flex: 1;
+}
+
+.stat-label {
+    display: block;
+    color: #666;
+    font-size: 0.9em;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.stat-value {
+    display: block;
+    font-size: 2em;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 5px;
+}
+
+.total-medicines .stat-value {
+    color: #0077B6;
+}
+
+.in-stock .stat-value {
+    color: #2ecc71;
+}
+
+.stat-trend {
+    font-size: 0.85em;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.stat-trend.positive {
+    color: #2ecc71;
+}
+
+.stat-trend.negative {
+    color: #e74c3c;
+}
+
+/* Add animation for counter */
+@keyframes countUp {
+    from {
+        transform: translateY(10px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.counter {
+    animation: countUp 0.5s ease-out forwards;
+}
+
+/* Add pulse animation for icons */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.stat-card:hover .stat-icon {
+    animation: pulse 1s infinite;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .medicines-header {
+        padding: 20px;
+    }
+
+    .medicines-header h2 {
+        font-size: 1.5em;
+        margin-bottom: 20px;
+    }
+
+    .stat-card {
+        min-width: 100%;
+        padding: 20px;
+    }
+
+    .stat-icon {
+        width: 50px;
+        height: 50px;
+    }
+
+    .stat-value {
+        font-size: 1.5em;
+    }
+}
+
+/* Add decorative elements */
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100px;
+    height: 100px;
+    background: currentColor;
+    opacity: 0.05;
+    border-radius: 50%;
+    transform: translate(50%, -50%);
+}
+
+.stat-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 70px;
+    height: 70px;
+    background: currentColor;
+    opacity: 0.05;
+    border-radius: 50%;
+    transform: translate(-50%, 50%);
+}
+</style>
+
+<script>
+function toggleDetails(button) {
+    // Get the parent medicine card
+    const medicineCard = button.closest('.medicine-card');
+    
+    // Get the details section within this card
+    const detailsSection = medicineCard.querySelector('.medicine-details');
+    
+    // Toggle active class on button
+    button.classList.toggle('active');
+    
+    // Toggle details visibility
+    if (detailsSection.style.display === 'block') {
+        detailsSection.style.display = 'none';
+        button.classList.remove('active');
+    } else {
+        // Hide all other detail sections first
+        document.querySelectorAll('.medicine-details').forEach(section => {
+            section.style.display = 'none';
+        });
+        document.querySelectorAll('.view-details-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        
+        // Show this detail section
+        detailsSection.style.display = 'block';
+        button.classList.add('active');
+        
+        // Smooth scroll to the details
+        detailsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+}
+
+function orderMedicine(medicineName) {
+    alert(`Order placed for ${medicineName}. Our team will contact you shortly.`);
+}
+</script>
+{% endblock %} 

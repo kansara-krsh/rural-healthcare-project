@@ -281,6 +281,232 @@
             font-size: 12px;
             animation: pulse 2s infinite;
         }
+
+        .doctor-profile {
+            position: relative;
+            margin-bottom: 3rem;
+            padding: 1rem;
+        }
+
+        .doctor-image-container {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto;
+            border-radius: 50%;
+            border: 3px solid #00B4D8;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .doctor-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .doctor-info {
+            position: absolute;
+            left: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            min-width: 200px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .doctor-name {
+            display: block;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: all 0.3s ease;
+        }
+
+        .doctor-designation {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: all 0.3s ease 0.5s;
+        }
+
+        .doctor-image-container:hover {
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 4px rgba(0, 180, 216, 0.2);
+        }
+
+        .doctor-image-container:hover .doctor-image {
+            transform: scale(1.1);
+        }
+
+        .doctor-image-container:hover + .doctor-info,
+        .doctor-info:hover {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(-50%) translateX(20px);
+        }
+
+        .doctor-image-container:hover + .doctor-info .doctor-name,
+        .doctor-info:hover .doctor-name {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .doctor-image-container:hover + .doctor-info .doctor-designation,
+        .doctor-info:hover .doctor-designation {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        /* Medicine Panel Styles */
+        .medicine-panel {
+            position: fixed;
+            right: -400px;
+            top: 0;
+            width: 400px;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: -5px 0 15px rgba(0, 119, 182, 0.1);
+            transition: right 0.3s ease;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .medicine-panel.active {
+            right: 0;
+        }
+
+        .medicine-header {
+            padding: 1.5rem;
+            background: #0077B6;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .medicine-grid {
+            padding: 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .medicine-card {
+            border: 2px solid #0077B6;
+            border-radius: 12px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: fadeIn 0.5s ease forwards;
+            opacity: 0;
+        }
+
+        .medicine-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 119, 182, 0.2);
+        }
+
+        .medicine-image {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .medicine-name {
+            font-weight: 600;
+            color: #0077B6;
+            margin-bottom: 0.5rem;
+        }
+
+        .medicine-volume {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        /* Medicine Modal Styles */
+        .medicine-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1100;
+        }
+
+        .medicine-modal-content {
+            position: relative;
+            width: 90%;
+            max-width: 600px;
+            margin: 2rem auto;
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            animation: slideIn 0.3s ease;
+        }
+
+        .order-btn {
+            background: #0077B6;
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .order-btn:hover {
+            background: #005b8c;
+            transform: translateY(-2px);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .medicine-count {
+            background: #ff4757;
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+        }
     </style>
     {% block styles %}{% endblock %}
 </head>
@@ -288,8 +514,16 @@
     <div class="dashboard-container">
         <!-- Move sidebar before main content -->
         <aside class="sidebar">
-            <div class="logo">
-                <h2>HMS</h2>
+            <div class="doctor-profile">
+                <div class="doctor-image-container">
+                    <img src="https://img.freepik.com/free-vector/doctor-character-background_1270-84.jpg" 
+                         alt="Doctor" 
+                         class="doctor-image">
+                </div>
+                <div class="doctor-info">
+                    <span class="doctor-name">Dr. John</span>
+                    <span class="doctor-designation">Intern</span>
+                </div>
             </div>
             <nav class="nav-menu">
                 <a href="{% url 'patients:dashboard' %}" class="nav-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
@@ -303,6 +537,11 @@
                 <a href="{% url 'patients:appointment_list' %}" class="nav-item {% if request.resolver_match.url_name == 'appointment_list' %}active{% endif %}">
                     <i class="fas fa-calendar-check"></i>
                     Appointments
+                </a>
+                <a href="{% url 'patients:medicines' %}" class="nav-item {% if request.resolver_match.url_name == 'medicines' %}active{% endif %}">
+                    <i class="fas fa-pills"></i>
+                    Medicines
+                
                 </a>
             </nav>
         </aside>
@@ -390,6 +629,94 @@
 
         // Random theme color on load (optional)
         // setThemeColor(Math.random() * 360);
+
+        // Add this to your existing scripts
+        const medicines = [
+            {
+                id: 1,
+                name: "Paracetamol",
+                image: "https://example.com/paracetamol.jpg",
+                volume: "500mg",
+                description: "Pain reliever and fever reducer",
+                price: "$5.99",
+                stock: 150,
+                usage: "Take 1-2 tablets every 4-6 hours",
+                sideEffects: "Nausea, stomach pain, loss of appetite"
+            },
+            // Add more medicines here...
+        ];
+
+        function toggleMedicinePanel() {
+            const panel = document.querySelector('.medicine-panel');
+            panel.classList.toggle('active');
+            
+            if(panel.classList.contains('active')) {
+                populateMedicines();
+            }
+        }
+
+        function populateMedicines() {
+            const grid = document.querySelector('.medicine-grid');
+            grid.innerHTML = '';
+            
+            medicines.forEach((medicine, index) => {
+                const card = document.createElement('div');
+                card.className = 'medicine-card';
+                card.style.animationDelay = `${index * 0.1}s`;
+                
+                card.innerHTML = `
+                    <img src="${medicine.image}" alt="${medicine.name}" class="medicine-image">
+                    <h4 class="medicine-name">${medicine.name}</h4>
+                    <p class="medicine-volume">${medicine.volume}</p>
+                `;
+                
+                card.onclick = () => showMedicineDetails(medicine);
+                grid.appendChild(card);
+            });
+        }
+
+        function showMedicineDetails(medicine) {
+            const modal = document.querySelector('.medicine-modal');
+            const content = modal.querySelector('.medicine-details');
+            
+            content.innerHTML = `
+                <img src="${medicine.image}" alt="${medicine.name}" class="medicine-image">
+                <h3>${medicine.name}</h3>
+                <p class="volume">Volume: ${medicine.volume}</p>
+                <p class="price">Price: ${medicine.price}</p>
+                <p class="stock">In Stock: ${medicine.stock} units</p>
+                <p class="description">${medicine.description}</p>
+                <div class="usage-info">
+                    <h4>Usage Instructions:</h4>
+                    <p>${medicine.usage}</p>
+                </div>
+                <div class="side-effects">
+                    <h4>Side Effects:</h4>
+                    <p>${medicine.sideEffects}</p>
+                </div>
+                <button class="order-btn" onclick="orderMedicine(${medicine.id})">
+                    Order Now
+                </button>
+            `;
+            
+            modal.style.display = 'block';
+        }
+
+        function orderMedicine(medicineId) {
+            // Add your order logic here
+            alert(`Medicine order placed for ID: ${medicineId}`);
+        }
+
+        // Close modal when clicking outside
+        document.querySelector('.medicine-modal').onclick = function(e) {
+            if(e.target === this) {
+                this.style.display = 'none';
+            }
+        };
+
+        document.querySelector('.close-modal').onclick = function() {
+            document.querySelector('.medicine-modal').style.display = 'none';
+        };
     </script>
     {% block scripts %}{% endblock %}
 </body>

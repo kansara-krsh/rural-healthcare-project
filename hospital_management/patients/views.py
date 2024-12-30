@@ -9,6 +9,7 @@ from django.utils import timezone
 from datetime import datetime, timedelta
 from django.db.models import Q
 from django.http import JsonResponse
+from django.conf import settings
 
 def login_view(request):
     if request.method == 'POST':
@@ -216,3 +217,24 @@ def add_patient(request):
             return redirect('patients:add_patient')
     
     return render(request, 'patients/add_patient.html')
+
+@login_required
+def medicines_view(request):
+    # Medicine data dictionary
+    medicines = {
+        'paracetamol': {
+            'name': 'Paracetamol',
+            'image': 'https://www.drugs.com/images/pills/nlm/004068801.jpg',
+            'volume': '500mg',
+            'price': '$5.99',
+        },
+        'amoxicillin': {
+            'name': 'Amoxicillin',
+            'image': 'https://www.drugs.com/images/pills/nlm/167140513.jpg',
+            'volume': '250mg',
+            'price': '$8.99',
+        },
+        # Add all other medicines here...
+    }
+    
+    return render(request, 'patients/medicines.html', {'medicines': medicines})
