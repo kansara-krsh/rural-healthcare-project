@@ -3,120 +3,181 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-<div class="dashboard-grid" data-reveal>
-    <!-- Village Map Box -->
-    <div class="dashboard-box map-box">
-        <h3 class="box-title">Village Map</h3>
-        <div class="map-container">
-            <!-- Replace YOUR_API_KEY with actual Google Maps API key -->
-            <iframe
-                width="100%"
-                height="100%"
-                frameborder="0"
-                style="border:0"
-                src="https://www.google.com/maps/embed/v1/place?key=YOUR_API_KEY&q=Village+Name"
-                allowfullscreen>
-            </iframe>
-        </div>
-    </div>
-
-    <!-- Village Address Box -->
-    <div class="dashboard-box address-box">
-        <h3 class="box-title">Village Details</h3>
-        <div class="address-content">
-            <div class="address-item">
-                <i class="fas fa-map-marker-alt"></i>
-                <div class="address-text">
-                    <h4>Location</h4>
-                    <p>Village Name, District</p>
-                    <p>State, PIN Code</p>
-                </div>
-            </div>
-            <div class="address-item">
-                <i class="fas fa-users"></i>
-                <div class="address-text">
-                    <h4>Population</h4>
-                    <p>5,000 Residents</p>
-                </div>
-            </div>
-            <div class="address-item">
-                <i class="fas fa-hospital"></i>
-                <div class="address-text">
-                    <h4>Healthcare Facilities</h4>
-                    <p>2 Primary Health Centers</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Environmental Metrics Box -->
-    <div class="dashboard-box metrics-box">
-        <h3 class="box-title">Environmental Metrics</h3>
-        <div class="metrics-grid">
-            <div class="metric-item">
-                <div class="metric-icon">
-                    <i class="fas fa-wind"></i>
-                </div>
-                <div class="metric-info">
-                    <h4>Air Quality Index</h4>
-                    <div class="metric-value" data-value="75">
-                        <span class="counter">0</span>
-                        <span class="unit">AQI</span>
+<div class="dashboard-container">
+    <div class="dashboard-grid">
+        <!-- Trending Health Issues Box should be the first item -->
+        <div class="trends-box">
+            <h3 class="box-title">Trending Health Issues</h3>
+            <div class="trends-container">
+                <div class="trend-cards">
+                    <!-- First Trend Card -->
+                    <div class="trend-card" style="--card-index: 0">
+                        <div class="trend-header">
+                            <i class="fas fa-virus"></i>
+                            <span class="trend-status increasing">+12% this week</span>
+                        </div>
+                        <h4>Viral Fever</h4>
+                        <div class="symptoms-container">
+                            <span class="symptom">High Temperature</span>
+                            <span class="symptom">Body Ache</span>
+                            <span class="symptom">Fatigue</span>
+                        </div>
+                        <div class="trend-chart">
+                            <canvas id="feverChart"></canvas>
+                        </div>
                     </div>
-                    <span class="metric-status moderate">Moderate</span>
-                </div>
-            </div>
-            <div class="metric-item">
-                <div class="metric-icon">
-                    <i class="fas fa-temperature-high"></i>
-                </div>
-                <div class="metric-info">
-                    <h4>Temperature</h4>
-                    <div class="metric-value" data-value="28">
-                        <span class="counter">0</span>
-                        <span class="unit">°C</span>
+
+                    <!-- Second Trend Card -->
+                    <div class="trend-card" style="--card-index: 1">
+                        <div class="trend-header">
+                            <i class="fas fa-head-side-cough"></i>
+                            <span class="trend-status decreasing">-8% this week</span>
+                        </div>
+                        <h4>Respiratory Issues</h4>
+                        <div class="symptoms-container">
+                            <span class="symptom">Cough</span>
+                            <span class="symptom">Breathing Difficulty</span>
+                            <span class="symptom">Chest Pain</span>
+                        </div>
+                        <div class="trend-chart">
+                            <canvas id="respiratoryChart"></canvas>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <div class="metric-item">
-                <div class="metric-icon">
-                    <i class="fas fa-tint"></i>
-                </div>
-                <div class="metric-info">
-                    <h4>Humidity</h4>
-                    <div class="metric-value" data-value="65">
-                        <span class="counter">0</span>
-                        <span class="unit">%</span>
+
+                    <!-- Third Trend Card -->
+                    <div class="trend-card" style="--card-index: 2">
+                        <div class="trend-header">
+                            <i class="fas fa-pills"></i>
+                            <span class="trend-status stable">Stable</span>
+                        </div>
+                        <h4>Seasonal Allergies</h4>
+                        <div class="symptoms-container">
+                            <span class="symptom">Runny Nose</span>
+                            <span class="symptom">Itchy Eyes</span>
+                            <span class="symptom">Sneezing</span>
+                        </div>
+                        <div class="trend-chart">
+                            <canvas id="allergyChart"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Health Camps Box -->
-    <div class="dashboard-box camps-box">
-        <h3 class="box-title">Upcoming Health Camps</h3>
-        <div class="camps-list">
-            <div class="camp-item">
-                <div class="camp-date">
-                    <span class="date">15</span>
-                    <span class="month">MAY</span>
+        <!-- Village Map Box -->
+        <div class="dashboard-box map-box">
+            <h3 class="box-title">Village Map</h3>
+            <div class="map-container">
+                <!-- Replace YOUR_API_KEY with actual Google Maps API key -->
+                <iframe
+                    width="100%"
+                    height="100%"
+                    frameborder="0"
+                    style="border:0"
+                    src="https://www.google.com/maps/embed/v1/place?key=YOUR_API_KEY&q=Village+Name"
+                    allowfullscreen>
+                </iframe>
+            </div>
+        </div>
+
+        <!-- Village Address Box -->
+        <div class="dashboard-box address-box">
+            <h3 class="box-title">Village Details</h3>
+            <div class="address-content">
+                <div class="address-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div class="address-text">
+                        <h4>Location</h4>
+                        <p>Village Name, District</p>
+                        <p>State, PIN Code</p>
+                    </div>
                 </div>
-                <div class="camp-info">
-                    <h4>General Health Camp</h4>
-                    <p><i class="fas fa-clock"></i> 9:00 AM - 4:00 PM</p>
-                    <p><i class="fas fa-map-pin"></i> Village Community Center</p>
+                <div class="address-item">
+                    <i class="fas fa-users"></i>
+                    <div class="address-text">
+                        <h4>Population</h4>
+                        <p>5,000 Residents</p>
+                    </div>
+                </div>
+                <div class="address-item">
+                    <i class="fas fa-hospital"></i>
+                    <div class="address-text">
+                        <h4>Healthcare Facilities</h4>
+                        <p>2 Primary Health Centers</p>
+                    </div>
                 </div>
             </div>
-            <div class="camp-item">
-                <div class="camp-date">
-                    <span class="date">22</span>
-                    <span class="month">MAY</span>
+        </div>
+
+        <!-- Environmental Metrics Box -->
+        <div class="dashboard-box metrics-box">
+            <h3 class="box-title">Environmental Metrics</h3>
+            <div class="metrics-grid">
+                <div class="metric-item">
+                    <div class="metric-icon">
+                        <i class="fas fa-wind"></i>
+                    </div>
+                    <div class="metric-info">
+                        <h4>Air Quality Index</h4>
+                        <div class="metric-value" data-value="75">
+                            <span class="counter">0</span>
+                            <span class="unit">AQI</span>
+                        </div>
+                        
+                    </div>
                 </div>
-                <div class="camp-info">
-                    <h4>Vaccination Drive</h4>
-                    <p><i class="fas fa-clock"></i> 10:00 AM - 3:00 PM</p>
-                    <p><i class="fas fa-map-pin"></i> Primary Health Center</p>
+                <div class="metric-item">
+                    <div class="metric-icon">
+                        <i class="fas fa-temperature-high"></i>
+                    </div>
+                    <div class="metric-info">
+                        <h4>Temperature</h4>
+                        <div class="metric-value" data-value="28">
+                            <span class="counter">0</span>
+                            <span class="unit">°C</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="metric-item">
+                    <div class="metric-icon">
+                        <i class="fas fa-tint"></i>
+                    </div>
+                    <div class="metric-info">
+                        <h4>Humidity</h4>
+                        <div class="metric-value" data-value="65">
+                            <span class="counter">0</span>
+                            <span class="unit">%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Health Camps Box -->
+        <div class="dashboard-box camps-box">
+            <h3 class="box-title">Upcoming Health Camps</h3>
+            <div class="camps-list">
+                <div class="camp-item">
+                    <div class="camp-date">
+                        <span class="date">15</span>
+                        <span class="month">MAY</span>
+                    </div>
+                    <div class="camp-info">
+                        <h4>General Health Camp</h4>
+                        <p><i class="fas fa-clock"></i> 9:00 AM - 4:00 PM</p>
+                        <p><i class="fas fa-map-pin"></i> Village Community Center</p>
+                    </div>
+                </div>
+                <div class="camp-item">
+                    <div class="camp-date">
+                        <span class="date">22</span>
+                        <span class="month">MAY</span>
+                    </div>
+                    <div class="camp-info">
+                        <h4>Vaccination Drive</h4>
+                        <p><i class="fas fa-clock"></i> 10:00 AM - 3:00 PM</p>
+                        <p><i class="fas fa-map-pin"></i> Primary Health Center</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -124,26 +185,336 @@
 </div>
 
 <style>
+    /* Body and Main Container Reset */
+    body {
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+    }
+
+    /* Main Layout Container */
+    .dashboard-container {
+        position: fixed;
+        left: 280px;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding: 2rem;
+        background: #f8f9fa;
+        box-sizing: border-box;
+    }
+
+    /* Grid Layout */
     .dashboard-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 2rem;
-        padding: 2rem;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    /* Trending Health Issues Box */
+    .trends-box {
+        grid-column: 1 / -1;
+        width: 100%;
+        background: white;
+        border: 2px solid #0077B6;
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        display: block; /* Ensure visibility */
+        position: relative; /* Establish stacking context */
+        z-index: 1; /* Ensure visibility */
+    }
+
+    .box-title {
+        color: #0077B6;
+        font-size: 1.25rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid rgba(0, 119, 182, 0.1);
+    }
+
+    /* Trend Cards Container */
+    .trends-container {
+        width: 100%;
+        padding: 0.5rem;
+        box-sizing: border-box;
+    }
+
+    /* Trend Cards Layout */
+    .trend-cards {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.25rem;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* Individual Trend Card */
+    .trend-card {
+        background: white;
+        border: 2px solid #0077B6;
+        border-radius: 12px;
+        padding: 1rem;
+        height: 100%;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .trend-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 15px rgba(0, 119, 182, 0.2);
+    }
+
+    /* Trend Header */
+    .trend-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.75rem;
+    }
+
+    .trend-header i {
+        font-size: 1.25rem;
+        color: #0077B6;
+    }
+
+    /* Status Badges */
+    .trend-status {
+        padding: 0.25rem 0.75rem;
+        border-radius: 15px;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+
+    .trend-status.increasing {
+        background: rgba(255, 75, 75, 0.1);
+        color: #FF4B4B;
+    }
+
+    .trend-status.decreasing {
+        background: rgba(76, 175, 80, 0.1);
+        color: #4CAF50;
+    }
+
+    .trend-status.stable {
+        background: rgba(0, 119, 182, 0.1);
+        color: #0077B6;
+    }
+
+    /* Disease Title */
+    .trend-card h4 {
+        color: #0077B6;
+        margin: 0.5rem 0;
+        font-size: 1.125rem;
+    }
+
+    /* Symptoms Container */
+    .symptoms-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin: 0.75rem 0;
+    }
+
+    .symptom {
+        background: rgba(0, 119, 182, 0.1);
+        color: #0077B6;
+        padding: 0.25rem 0.75rem;
+        border-radius: 15px;
+        font-size: 0.813rem;
+        white-space: nowrap;
+    }
+
+    /* Chart Container */
+    .trend-chart {
+        margin-top: auto;
+        height: 80px;
+        width: 100%;
+    }
+
+    /* Responsive Design */
+    @media screen and (max-width: 1400px) {
+        .trend-cards {
+            gap: 1rem;
+        }
+    }
+
+    @media screen and (max-width: 1200px) {
+        .dashboard-container {
+            left: 250px;
+        }
+        
+        .trend-cards {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media screen and (max-width: 992px) {
+        .trend-cards {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media screen and (max-width: 768px) {
+        .dashboard-container {
+            left: 0;
+            padding: 1rem;
+        }
+        
+        .trends-box {
+            padding: 1rem;
+        }
+    }
+
+    /* Animation */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .trends-box {
+        animation: fadeIn 0.5s ease forwards;
+    }
+
+    /* Box Sizing */
+    .map-box, 
+    .address-box,
+    .metrics-box,
+    .camps-box {
+        min-height: 400px;
+        width: 100%;
+    }
+
+    /* Dashboard Box Common Styles */
+    .dashboard-box {
+        background: white;
+        border: 2px solid #0077B6;
+        border-radius: 15px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        box-sizing: border-box;
+    }
+
+    /* Custom Scrollbar */
+    .dashboard-container::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .dashboard-container::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    .dashboard-container::-webkit-scrollbar-thumb {
+        background: #0077B6;
+        border-radius: 4px;
+    }
+
+    .dashboard-container::-webkit-scrollbar-thumb:hover {
+        background: #005d91;
+    }
+
+    /* Responsive Design */
+    @media screen and (max-width: 1400px) {
+        .dashboard-grid {
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+    }
+
+    @media screen and (max-width: 1200px) {
+        .dashboard-container {
+            left: 250px;
+        }
+    }
+
+    @media screen and (max-width: 992px) {
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .map-box, 
+        .address-box,
+        .metrics-box,
+        .camps-box {
+            min-height: 350px;
+        }
+    }
+
+    @media screen and (max-width: 768px) {
+        .dashboard-container {
+            left: 0;
+            padding: 1rem;
+        }
+    }
+
+    /* Content Box Styles */
+    .box-title {
+        color: #0077B6;
+        font-size: 1.25rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid rgba(0, 119, 182, 0.1);
+    }
+
+    /* Map Container Fix */
+    .map-container {
+        width: 100%;
+        height: calc(100% - 50px);
+        position: relative;
+    }
+
+    .map-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 12px;
+    }
+
+    /* Metrics Grid Fix */
+    .metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+
+    /* Animation */
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
     .dashboard-box {
-        background: var(--white);
-        border-radius: 15px;
-        padding: 1.5rem;
-        box-shadow: 0 4px 20px rgba(0, 119, 182, 0.1);
-        border: 2px solid #0077B6;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        min-height: 350px;
+        animation: slideIn 0.5s ease forwards;
     }
 
-    .dashboard-box:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 25px rgba(0, 119, 182, 0.2);
+    /* Chart Container Fix */
+    .trend-chart {
+        width: 100%;
+        height: 100px;
+        margin-top: 1rem;
+        position: relative;
     }
 
     .box-title {
@@ -300,6 +671,93 @@
     .counter {
         animation: countUp 1s ease forwards;
     }
+
+    /* Trending Diseases Styles */
+    .trend-cards {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        margin-top: 1rem;
+    }
+
+    .trend-card {
+        background: white;
+        border: 2px solid #0077B6;
+        border-radius: 12px;
+        padding: 1.5rem;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .trend-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 119, 182, 0.2);
+    }
+
+    .trend-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .trend-header i {
+        font-size: 1.5rem;
+        color: #0077B6;
+    }
+
+    .trend-status {
+        padding: 0.25rem 0.75rem;
+        border-radius: 15px;
+        font-size: 0.875rem;
+    }
+
+    .trend-status.increasing {
+        background: rgba(255, 75, 75, 0.1);
+        color: #FF4B4B;
+    }
+
+    .trend-status.decreasing {
+        background: rgba(76, 175, 80, 0.1);
+        color: #4CAF50;
+    }
+
+    .trend-status.stable {
+        background: rgba(0, 119, 182, 0.1);
+        color: #0077B6;
+    }
+
+    .symptoms-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin: 1rem 0;
+    }
+
+    .symptom {
+        background: rgba(0, 119, 182, 0.1);
+        color: #0077B6;
+        padding: 0.25rem 0.75rem;
+        border-radius: 15px;
+        font-size: 0.875rem;
+        animation: fadeIn 0.5s ease;
+    }
+
+    .trend-chart {
+        height: 100px;
+        margin-top: 1rem;
+    }
+
+    @media (max-width: 1024px) {
+        .trend-cards {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .trend-cards {
+            grid-template-columns: 1fr;
+        }
+    }
 </style>
 
 <script>
@@ -325,5 +783,88 @@
             updateCounter();
         });
     });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Fever Chart
+    new Chart(document.getElementById('feverChart'), {
+        type: 'line',
+        data: {
+            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            datasets: [{
+                data: [15, 18, 22, 25, 27, 28, 30],
+                borderColor: '#0077B6',
+                backgroundColor: 'rgba(0, 119, 182, 0.1)',
+                fill: true,
+                tension: 0.4,
+                borderWidth: 2,
+                pointRadius: 0
+            }]
+        },
+        options: {
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { display: false },
+                y: { display: false }
+            },
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+    // Respiratory Chart
+    new Chart(document.getElementById('respiratoryChart'), {
+        type: 'line',
+        data: {
+            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            datasets: [{
+                data: [25, 22, 20, 18, 15, 14, 12],
+                borderColor: '#0077B6',
+                backgroundColor: 'rgba(0, 119, 182, 0.1)',
+                fill: true,
+                tension: 0.4,
+                borderWidth: 2,
+                pointRadius: 0
+            }]
+        },
+        options: {
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { display: false },
+                y: { display: false }
+            },
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+    // Allergy Chart
+    new Chart(document.getElementById('allergyChart'), {
+        type: 'line',
+        data: {
+            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            datasets: [{
+                data: [20, 19, 21, 20, 22, 21, 20],
+                borderColor: '#0077B6',
+                backgroundColor: 'rgba(0, 119, 182, 0.1)',
+                fill: true,
+                tension: 0.4,
+                borderWidth: 2,
+                pointRadius: 0
+            }]
+        },
+        options: {
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { display: false },
+                y: { display: false }
+            },
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+});
 </script>
 {% endblock %} 

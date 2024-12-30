@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="page-header" data-reveal="top">
-    <h2 class="gradient-text">Appointments Management</h2>
+    <h2 class="gradient-text">Appointments</h2>
 </div>
 
 <!-- Appointment Statistics -->
@@ -57,9 +57,9 @@
 <div class="calendar-section glass-effect" data-reveal="bottom">
     <div class="calendar-header">
         <div class="month-navigation">
-            <button class="nav-btn"><i class="fas fa-chevron-left"></i></button>
+            <button class="nav-btn" id="prevMonth"><i class="fas fa-chevron-left"></i></button>
             <h3 class="current-month">May 2024</h3>
-            <button class="nav-btn"><i class="fas fa-chevron-right"></i></button>
+            <button class="nav-btn" id="nextMonth"><i class="fas fa-chevron-right"></i></button>
         </div>
         <div class="calendar-legend">
             <span class="legend-item"><span class="dot available"></span>Available</span>
@@ -79,17 +79,7 @@
         <div class="weekday">Sat</div>
 
         <!-- Calendar days will be dynamically generated -->
-        {% for day in calendar_days %}
-        <div class="calendar-day {% if day.has_appointments %}has-appointments{% endif %}">
-            <span class="day-number">{{ day.date }}</span>
-            {% if day.appointments_count > 0 %}
-            <div class="appointment-indicator">
-                <span class="count">{{ day.appointments_count }}</span>
-                <span class="label">appts</span>
-            </div>
-            {% endif %}
-        </div>
-        {% endfor %}
+        <div id="calendar-days"></div>
     </div>
 </div>
 
@@ -146,11 +136,9 @@
 /* Calendar Styles */
 .calendar-section {
     background: white;
-    border: 2px solid #0077B6;
     border-radius: 15px;
     padding: 2rem;
     margin-top: 2rem;
-    animation: fadeIn 0.5s ease;
 }
 
 .calendar-header {
@@ -164,6 +152,13 @@
     display: flex;
     align-items: center;
     gap: 1rem;
+}
+
+.current-month {
+    font-size: 1.25rem;
+    color: #0077B6;
+    min-width: 120px;
+    text-align: center;
 }
 
 .nav-btn {
@@ -181,10 +176,20 @@
     background: rgba(0, 119, 182, 0.1);
 }
 
+/* Calendar Grid */
 .calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     gap: 0.5rem;
+    width: 100%;
+}
+
+#calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+    width: 100%;
+    grid-column: 1 / -1; /* Span all columns */
 }
 
 .weekday {
@@ -204,6 +209,7 @@
     align-items: center;
     cursor: pointer;
     transition: all 0.3s ease;
+    position: relative;
 }
 
 .calendar-day:hover {
@@ -211,10 +217,65 @@
     background: rgba(0, 119, 182, 0.05);
 }
 
+.calendar-day.today {
+    background: rgba(0, 119, 182, 0.1);
+    border-color: #0077B6;
+}
+
+.calendar-day.other-month {
+    color: #999;
+    background: #f5f5f5;
+}
+
 .calendar-day.has-appointments {
     border-color: #0077B6;
     background: rgba(0, 119, 182, 0.05);
 }
+
+.day-number {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.appointment-indicator {
+    font-size: 0.75rem;
+    color: #0077B6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.appointment-indicator .count {
+    font-weight: bold;
+}
+
+.appointment-indicator .label {
+    font-size: 0.65rem;
+}
+
+/* Legend Styles */
+.calendar-legend {
+    display: flex;
+    gap: 1rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.dot.available { background: #4CAF50; }
+.dot.booked { background: #0077B6; }
+.dot.holiday { background: #FF4B4B; }
 
 /* Animations */
 @keyframes slideIn {
@@ -262,27 +323,106 @@
 </style>
 
 <script>
-// Counter animation
 document.addEventListener('DOMContentLoaded', function() {
-    const counters = document.querySelectorAll('.stat-number');
-    
-    counters.forEach(counter => {
-        const target = counter.dataset.value;
-        let current = 0;
-        const increment = target / 50;
+    const calendarDays = document.getElementById('calendar-days');
+    const currentMonthElement = document.querySelector('.current-month');
+    const prevMonthBtn = document.getElementById('prevMonth');
+    const nextMonthBtn = document.getElementById('nextMonth');
+
+    let currentDate = new Date();
+    let currentMonth = currentDate.getMonth();
+    let currentYear = currentDate.getFullYear();
+
+    function generateCalendar(month, year) {
+        // Clear previous calendar
+        calendarDays.innerHTML = '';
         
-        const updateCounter = () => {
-            if (current < target) {
-                current += increment;
-                counter.textContent = Math.round(current);
-                requestAnimationFrame(updateCounter);
-            } else {
-                counter.textContent = target;
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        const startingDay = firstDay.getDay(); // Day of week (0-6)
+        const monthLength = lastDay.getDate();
+        
+        // Update month display
+        const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                          'July', 'August', 'September', 'October', 'November', 'December'];
+        currentMonthElement.textContent = `${monthNames[month]} ${year}`;
+
+        // Previous month's days
+        const prevMonthLastDay = new Date(year, month, 0).getDate();
+        for (let i = startingDay - 1; i >= 0; i--) {
+            const dayElement = createDayElement(prevMonthLastDay - i, true);
+            calendarDays.appendChild(dayElement);
+        }
+
+        // Current month's days
+        for (let day = 1; day <= monthLength; day++) {
+            const dayElement = createDayElement(day, false);
+            
+            // Add today's date indicator
+            if (year === currentDate.getFullYear() && 
+                month === currentDate.getMonth() && 
+                day === currentDate.getDate()) {
+                dayElement.classList.add('today');
             }
-        };
+            
+            // Add appointment status randomly for demo
+            if (Math.random() > 0.7) {
+                const appointments = Math.floor(Math.random() * 3) + 1;
+                dayElement.classList.add('has-appointments');
+                const indicator = document.createElement('div');
+                indicator.className = 'appointment-indicator';
+                indicator.innerHTML = `
+                    <span class="count">${appointments}</span>
+                    <span class="label">appts</span>
+                `;
+                dayElement.appendChild(indicator);
+            }
+            
+            calendarDays.appendChild(dayElement);
+        }
+
+        // Next month's days
+        const totalDays = startingDay + monthLength;
+        const remainingDays = 42 - totalDays; // 42 = 6 rows * 7 days
+        for (let day = 1; day <= remainingDays; day++) {
+            const dayElement = createDayElement(day, true);
+            calendarDays.appendChild(dayElement);
+        }
+    }
+
+    function createDayElement(day, isOtherMonth) {
+        const dayElement = document.createElement('div');
+        dayElement.className = `calendar-day${isOtherMonth ? ' other-month' : ''}`;
         
-        updateCounter();
+        const dayNumber = document.createElement('span');
+        dayNumber.className = 'day-number';
+        dayNumber.textContent = day;
+        dayElement.appendChild(dayNumber);
+
+        return dayElement;
+    }
+
+    // Event Listeners
+    prevMonthBtn.addEventListener('click', () => {
+        currentMonth--;
+        if (currentMonth < 0) {
+            currentMonth = 11;
+            currentYear--;
+        }
+        generateCalendar(currentMonth, currentYear);
     });
+
+    nextMonthBtn.addEventListener('click', () => {
+        currentMonth++;
+        if (currentMonth > 11) {
+            currentMonth = 0;
+            currentYear++;
+        }
+        generateCalendar(currentMonth, currentYear);
+    });
+
+    // Initial calendar generation
+    generateCalendar(currentMonth, currentYear);
 });
 </script>
 {% endblock %} 

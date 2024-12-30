@@ -3,20 +3,6 @@
 {% block title %}Patients{% endblock %}
 
 {% block content %}
-<!-- Search and Add Patient Section -->
-<div class="top-section" data-reveal="top">
-    <div class="search-container">
-        <div class="search-box">
-            <i class="fas fa-search"></i>
-            <input type="text" id="patientSearch" placeholder="Search patients by name, ID or phone...">
-        </div>
-        <button class="add-patient-btn" onclick="openAddPatientModal()">
-            <i class="fas fa-user-plus"></i>
-            Add Patient
-        </button>
-    </div>
-</div>
-
 <!-- Statistics Cards -->
 <div class="stats-container" data-reveal="bottom">
     <!-- Total Patients -->
@@ -63,6 +49,54 @@
             </p>
         </div>
     </div>
+</div>
+
+<!-- Single Search Form with Enhanced UI -->
+<div class="search-container glass-effect" data-reveal="top">
+    <form method="GET" action="{% url 'patients:patient_list' %}" class="search-form">
+        <div class="search-input-wrapper">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" 
+                   name="search" 
+                   placeholder="Search patients by name, email, or phone..." 
+                   value="{{ search_query }}"
+                   class="search-input">
+        </div>
+    </form>
+    <button class="add-patient-btn" onclick="openAddPatientModal()">
+        <i class="fas fa-user-plus"></i>
+        Add Patient
+    </button>
+</div>
+
+<!-- Enhanced Patient List with Animations -->
+<div class="patient-list">
+    {% if patients %}
+        {% for patient in patients %}
+        <div class="patient-card glass-effect" data-reveal="bottom" style="--delay: {{ forloop.counter0 }}">
+            <div class="patient-info">
+                <h3>{{ patient.first_name }} {{ patient.last_name }}</h3>
+                <div class="patient-details">
+                    <p><i class="fas fa-phone"></i> {{ patient.phone_number }}</p>
+                    {% if patient.email %}
+                        <p><i class="fas fa-envelope"></i> {{ patient.email }}</p>
+                    {% endif %}
+                    <p><i class="fas fa-calendar"></i> Age: {{ patient.age }}</p>
+                </div>
+            </div>
+            <div class="patient-actions">
+                <a href="{% url 'patients:patient_detail' patient.id %}" class="btn-view">
+                    View Details <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="no-results glass-effect" data-reveal="bottom">
+            <i class="fas fa-search-minus"></i>
+            <p>No patients found{% if search_query %} for "{{ search_query }}"{% endif %}</p>
+        </div>
+    {% endif %}
 </div>
 
 <!-- Add Patient Modal -->
@@ -117,32 +151,6 @@
 .top-section {
     margin-bottom: 2rem;
     padding: 1rem;
-}
-
-.search-container {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    justify-content: space-between;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.search-box {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    background: var(--white);
-    border: 2px solid #0077B6;
-    border-radius: 10px;
-    padding: 0.75rem 1.5rem;
-    box-shadow: 0 4px 15px rgba(0, 119, 182, 0.1);
-    transition: all 0.3s ease;
-}
-
-.search-box:focus-within {
-    box-shadow: 0 4px 20px rgba(0, 119, 182, 0.2);
-    transform: translateY(-2px);
 }
 
 .search-box i {
@@ -368,6 +376,175 @@
     .form-grid {
         grid-template-columns: 1fr;
     }
+}
+
+.search-container {
+    margin: 2rem auto;
+    max-width: 1200px;
+    padding: 1rem;
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 4px 15px rgba(0, 119, 182, 0.1);
+    border: 2px solid #0077B6;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.search-form {
+    flex: 1;
+}
+
+.add-patient-btn {
+    background: #0077B6;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 0.75rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 119, 182, 0.2);
+    white-space: nowrap;
+}
+
+.add-patient-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 119, 182, 0.3);
+}
+
+.search-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-icon {
+    position: absolute;
+    left: 1rem;
+    color: #0077B6;
+    font-size: 1.2rem;
+}
+
+.search-input {
+    width: 100%;
+    padding: 1rem 1rem 1rem 3rem;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    background: transparent;
+    color: #333;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    background: rgba(0, 119, 182, 0.05);
+}
+
+/* Patient List Styles */
+.patient-list {
+    display: grid;
+    gap: 1.5rem;
+    padding: 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.patient-card {
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid #0077B6;
+    border-radius: 15px;
+    padding: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+    animation: slideIn 0.5s ease forwards;
+    animation-delay: calc(var(--delay) * 0.1s);
+    opacity: 0;
+}
+
+.patient-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 119, 182, 0.2);
+}
+
+.patient-info h3 {
+    color: #0077B6;
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+}
+
+.patient-details {
+    display: grid;
+    gap: 0.5rem;
+    color: #555;
+}
+
+.patient-details i {
+    color: #0077B6;
+    width: 20px;
+}
+
+.btn-view {
+    background: #0077B6;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.btn-view:hover {
+    background: #005b8c;
+    transform: translateX(5px);
+}
+
+.no-results {
+    text-align: center;
+    padding: 3rem;
+    color: #666;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.no-results i {
+    font-size: 2.5rem;
+    color: #0077B6;
+}
+
+/* Animations */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+[data-reveal="bottom"] {
+    opacity: 0;
+    animation: slideIn 0.5s ease forwards;
+    animation-delay: calc(var(--delay, 0) * 0.1s);
+}
+
+[data-reveal="top"] {
+    opacity: 0;
+    animation: slideIn 0.5s ease forwards;
 }
 </style>
 

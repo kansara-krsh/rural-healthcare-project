@@ -34,15 +34,21 @@ def patient_list(request):
     # Get total patients count
     total_patients = Patient.objects.count()
     
-    # Get patients with alerts (example criteria)
-    # 1. Patients with pending status
-    # 2. Patients who haven't visited in last 6 months
-    # 3. Patients with critical conditions
-    six_months_ago = datetime.now() - timedelta(days=180)
+    # Improved search query
+    if search_query:
+        patients = Patient.objects.filter(
+            Q(first_name__icontains=search_query) |
+            Q(last_name__icontains=search_query) |
+            Q(phone_number__icontains=search_query) |
+            Q(email__icontains=search_query)
+        ).order_by('-created_at')
+    else:
+        patients = Patient.objects.all().order_by('-created_at')
     
-    patients_with_alerts = Patient.objects.filter(
+    # Get patients with alerts
+    patients_with_alerts = patients.filter(
         Q(status='pending') |
-        Q(updated_at__lt=six_months_ago)
+        Q(updated_at__lt=timezone.now() - timedelta(days=180))
     )
     
     patient_alerts = {
@@ -52,21 +58,12 @@ def patient_list(request):
                 'id': patient.id,
                 'name': f"{patient.first_name} {patient.last_name}",
                 'reason': 'Pending Review' if patient.status == 'pending' else 'Follow-up Required',
-                'days': (datetime.now().date() - patient.updated_at.date()).days,
+                'days': (timezone.now().date() - patient.updated_at.date()).days,
                 'status': patient.status
             }
-            for patient in patients_with_alerts[:5]  # Get latest 5 alerts
+            for patient in patients_with_alerts[:5]
         ]
     }
-    
-    if search_query:
-        patients = Patient.objects.filter(
-            Q(first_name__icontains=search_query) |
-            Q(last_name__icontains=search_query) |
-            Q(phone_number__icontains=search_query)
-        )
-    else:
-        patients = Patient.objects.all()
     
     context = {
         'patients': patients,
@@ -148,25 +145,41 @@ def patient_edit(request, patient_id):
     patient = get_object_or_404(Patient, id=patient_id)
     
     if request.method == 'POST':
-        # Handle form submission
-        patient.first_name = request.POST.get('first_name')
-        patient.last_name = request.POST.get('last_name')
-        patient.date_of_birth = request.POST.get('date_of_birth')
-        patient.gender = request.POST.get('gender')
-        patient.phone_number = request.POST.get('phone_number')
-        patient.email = request.POST.get('email')
-        patient.address = request.POST.get('address')
-        patient.blood_group = request.POST.get('blood_group')
-        patient.medical_history = request.POST.get('medical_history')
-        patient.current_medications = request.POST.get('current_medications')
-        patient.save()
+        # Get form data with proper validation
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        date_of_birth = request.POST.get('date_of_birth')
+        gender = request.POST.get('gender')
+        phone_number = request.POST.get('phone_number')
+        email = request.POST.get('email')
         
-        messages.success(request, 'Patient details updated successfully')
-        return redirect('patients:patient_detail', patient_id=patient.id)
+        # Validate required fields
+        if not all([first_name, last_name, date_of_birth, gender, phone_number]):
+            messages.error(request, 'Please fill in all required fields')
+            return redirect('patients:patient_edit', patient_id=patient_id)
+        
+        try:
+            # Update patient information
+            patient.first_name = first_name
+            patient.last_name = last_name
+            patient.date_of_birth = date_of_birth
+            patient.gender = gender
+            patient.phone_number = phone_number
+            patient.email = email
+            patient.save()
+            
+            messages.success(request, 'Patient information updated successfully')
+            return redirect('patients:patient_detail', patient_id=patient_id)
+            
+        except Exception as e:
+            messages.error(request, f'Error updating patient: {str(e)}')
+            return redirect('patients:patient_edit', patient_id=patient_id)
     
-    return render(request, 'patients/patient_edit.html', {
-        'patient': patient
-    })
+    context = {
+        'patient': patient,
+        'page_title': f'Edit Patient: {patient.first_name} {patient.last_name}'
+    }
+    return render(request, 'patients/patient_edit.html', context)
 
 @login_required
 def add_patient(request):
