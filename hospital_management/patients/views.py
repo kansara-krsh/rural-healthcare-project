@@ -238,3 +238,9 @@ def medicines_view(request):
     }
     
     return render(request, 'patients/medicines.html', {'medicines': medicines})
+
+def report_view(request):
+    return render(request, 'patients/report.html')
+
+def contact_view(request):
+    return render(request, 'patients/contact.html')

@@ -1,0 +1,525 @@
+{% extends 'patients/base.html' %}
+{% load static %}
+
+{% block title %}Medical Report{% endblock %}
+
+{% block content %}
+<div class="report-container glass-effect" data-reveal="top">
+    <!-- Header -->
+    <div class="report-header">
+        <div class="header-flex">
+            <img src="{% static 'images/Rcare.png' %}" alt="Rcare" class="rcare-logo">
+            <div class="address-info">
+                <p>123 Healthcare Avenue</p>
+                <p>Medical District, City - 12345</p>
+                <p>Phone: (555) 123-4567</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Patient Information Form -->
+    <form id="reportForm" class="report-form">
+        <div class="form-row">
+            <label>Name:</label>
+            <input type="text" name="patientName" required>
+        </div>
+
+        <div class="form-row">
+            <label>Age:</label>
+            <input type="number" name="patientAge" required>
+        </div>
+
+        <div class="form-row">
+            <label>Sex:</label>
+            <select name="patientSex" required>
+                <option value="">Select</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+            </select>
+        </div>
+
+        <div class="medicine-row">
+            <div class="medicine-input">
+                <label>Medicine:</label>
+                <input type="text" name="medicine">
+            </div>
+            <div class="quantity-input">
+                <label>Quantity:</label>
+                <input type="number" name="quantity">
+            </div>
+            <button type="button" class="add-medicine-btn" onclick="addMedicineRow()">
+                <i class="fas fa-plus"></i>
+            </button>
+        </div>
+
+        <div id="medicine-container"></div>
+
+        <div class="form-row">
+            <label>Description (50 words max):</label>
+            <textarea name="description" maxlength="250" rows="3"></textarea>
+            <span class="word-count">0/50 words</span>
+        </div>
+
+        <div class="form-row">
+            <label>Next Appointment Date:</label>
+            <input type="date" name="nextAppointment">
+        </div>
+
+        <div class="form-row">
+            <label>Total Amount:</label>
+            <input type="number" name="totalAmount" required placeholder="Enter amount in ₹">
+        </div>
+
+        <div class="form-row payment-method">
+            <label>Payment Method:</label>
+            <div class="payment-options">
+                <label class="radio-option">
+                    <input type="radio" name="paymentMethod" value="online" required>
+                    <span>Online</span>
+                </label>
+                <label class="radio-option">
+                    <input type="radio" name="paymentMethod" value="cash" required>
+                    <span>Cash</span>
+                </label>
+            </div>
+        </div>
+
+        <div class="signature-section">
+            <img src="{% static 'images/signature.png' %}" alt="Doctor's Signature" class="signature-image">
+        </div>
+
+        <button type="button" class="print-btn" onclick="generatePDF()">
+            <i class="fas fa-print"></i> Print Report
+        </button>
+    </form>
+</div>
+
+<!-- Add this hidden div for PDF generation -->
+<div id="pdf-content" style="display: none;">
+</div>
+
+<style>
+.report-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #0077B6;
+}
+
+.rcare-logo {
+    width: 180px;
+    height: auto;
+}
+
+.address-info {
+    text-align: right;
+    color: #333;
+}
+
+.address-info p {
+    margin: 0.2rem 0;
+    font-size: 0.9rem;
+}
+
+.form-row {
+    margin-bottom: 1.5rem;
+}
+
+.form-row label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.form-row input,
+.form-row select,
+.form-row textarea {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.medicine-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr auto;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.add-medicine-btn {
+    padding: 0.8rem;
+    background: #0077B6;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    height: fit-content;
+    align-self: end;
+}
+
+.signature-section {
+    margin: 2rem 0;
+    text-align: right;
+}
+
+.signature-image {
+    width: 200px;
+    height: auto;
+}
+
+.print-btn {
+    width: 100%;
+    padding: 1rem;
+    background: #0077B6;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border: 2px solid #0077B6;
+    transition: all 0.3s ease;
+}
+
+.print-btn:hover {
+    background: white;
+    color: #0077B6;
+}
+
+/* Print Styles */
+@media print {
+    .report-container {
+        box-shadow: none;
+        padding: 0;
+    }
+
+    .print-btn {
+        display: none;
+    }
+
+    .rcare-logo,
+    .signature-image {
+        filter: grayscale(100%);
+    }
+}
+
+.payment-method {
+    margin: 1.5rem 0;
+}
+
+.payment-options {
+    display: flex;
+    gap: 2rem;
+    margin-top: 0.5rem;
+}
+
+.radio-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.radio-option input[type="radio"] {
+    width: auto;
+    margin: 0;
+}
+
+/* PDF specific styles */
+.pdf-ready {
+    width: 210mm;
+    min-height: 297mm;
+    padding: 20mm;
+    margin: 0 auto;
+    background: white;
+    font-size: 12pt;
+    line-height: 1.3;
+}
+
+.pdf-ready .header-flex {
+    margin-bottom: 30pt;
+}
+
+.pdf-ready .form-row {
+    margin-bottom: 15pt;
+}
+
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    #pdf-content * {
+        visibility: visible;
+    }
+    #pdf-content {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+    }
+}
+</style>
+
+<script>
+function addMedicineRow() {
+    const container = document.getElementById('medicine-container');
+    const newRow = document.createElement('div');
+    newRow.className = 'medicine-row';
+    newRow.innerHTML = `
+        <div class="medicine-input">
+            <label>Medicine:</label>
+            <input type="text" name="medicine">
+        </div>
+        <div class="quantity-input">
+            <label>Quantity:</label>
+            <input type="number" name="quantity">
+        </div>
+        <button type="button" class="add-medicine-btn" onclick="this.parentElement.remove()">
+            <i class="fas fa-minus"></i>
+        </button>
+    `;
+    container.appendChild(newRow);
+}
+
+// Word count for description
+const description = document.querySelector('textarea[name="description"]');
+const wordCount = document.querySelector('.word-count');
+
+description.addEventListener('input', function() {
+    const words = this.value.trim().split(/\s+/).length;
+    wordCount.textContent = `${words}/50 words`;
+    
+    if (words > 50) {
+        const words = this.value.trim().split(/\s+/).slice(0, 50);
+        this.value = words.join(' ');
+    }
+});
+
+function generatePDF() {
+    // Create a formatted content string with form data
+    const formattedContent = prepareFormContent();
+    
+    // Update the report container with formatted content
+    const reportContainer = document.querySelector('.report-container');
+    const originalContent = reportContainer.innerHTML;
+    reportContainer.innerHTML = formattedContent;
+
+    // Configure PDF options
+    const opt = {
+        margin: [10, 10, 10, 10],
+        filename: 'medical_report.pdf',
+        image: { type: 'jpeg', quality: 1 },
+        html2canvas: { 
+            scale: 2,
+            useCORS: true,
+            logging: true,
+            letterRendering: true
+        },
+        jsPDF: { 
+            unit: 'mm', 
+            format: 'a4', 
+            orientation: 'portrait'
+        }
+    };
+
+    // Generate PDF
+    html2pdf().from(reportContainer).set(opt).save().then(() => {
+        // Restore original content after PDF generation
+        reportContainer.innerHTML = originalContent;
+        
+        // Reinitialize any event listeners if needed
+        initializeEventListeners();
+    });
+}
+
+function prepareFormContent() {
+    const form = document.getElementById('reportForm');
+    const formData = new FormData(form);
+
+    // Get all medicine entries
+    const medicineRows = [];
+    document.querySelectorAll('.medicine-row').forEach(row => {
+        const medicine = row.querySelector('input[name="medicine"]').value;
+        const quantity = row.querySelector('input[name="quantity"]').value;
+        if (medicine && quantity) {
+            medicineRows.push({ medicine, quantity });
+        }
+    });
+
+    // Create formatted HTML for PDF
+    return `
+        <div class="pdf-document">
+            <div class="pdf-header">
+                <img src="${document.querySelector('.rcare-logo').src}" alt="Rcare" class="pdf-logo">
+                <div class="pdf-address">
+                    <p>123 Healthcare Avenue</p>
+                    <p>Medical District, City - 12345</p>
+                    <p>Phone: (555) 123-4567</p>
+                </div>
+            </div>
+
+            <div class="pdf-content">
+                <div class="patient-info">
+                    <p><strong>Name:</strong> ${formData.get('patientName')}</p>
+                    <p><strong>Age:</strong> ${formData.get('patientAge')}</p>
+                    <p><strong>Sex:</strong> ${formData.get('patientSex')}</p>
+                </div>
+
+                <div class="medicine-table">
+                    <h3>Prescribed Medicines</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Medicine</th>
+                                <th>Quantity</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${medicineRows.map(row => `
+                                <tr>
+                                    <td>${row.medicine}</td>
+                                    <td>${row.quantity}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="description-section">
+                    <h3>Description</h3>
+                    <p>${formData.get('description')}</p>
+                </div>
+
+                <div class="appointment-section">
+                    <p><strong>Next Appointment:</strong> ${formData.get('nextAppointment') || 'Not scheduled'}</p>
+                </div>
+
+                <div class="payment-section">
+                    <p><strong>Total Amount:</strong> ₹${formData.get('totalAmount')}</p>
+                    <p><strong>Payment Method:</strong> ${formData.get('paymentMethod')}</p>
+                </div>
+
+                <div class="signature-section">
+                    <img src="${document.querySelector('.signature-image').src}" alt="Signature" class="pdf-signature">
+                    <p class="doctor-name">Dr. John</p>
+                    <p class="doctor-title">Intern</p>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// Add these styles for PDF formatting
+const style = document.createElement('style');
+style.textContent = `
+    .pdf-document {
+        padding: 20px;
+        font-family: Arial, sans-serif;
+    }
+
+    .pdf-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 30px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #0077B6;
+    }
+
+    .pdf-logo {
+        width: 150px;
+        height: auto;
+    }
+
+    .pdf-address p {
+        margin: 2px 0;
+        font-size: 12px;
+    }
+
+    .patient-info p {
+        margin: 10px 0;
+    }
+
+    .medicine-table {
+        margin: 20px 0;
+    }
+
+    .medicine-table table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+
+    .medicine-table th,
+    .medicine-table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+
+    .description-section,
+    .appointment-section,
+    .payment-section {
+        margin: 20px 0;
+    }
+
+    .signature-section {
+        margin-top: 40px;
+        text-align: right;
+    }
+
+    .pdf-signature {
+        width: 150px;
+        height: auto;
+    }
+
+    .doctor-name {
+        margin: 5px 0 0 0;
+        font-weight: bold;
+    }
+
+    .doctor-title {
+        margin: 0;
+        color: #666;
+    }
+`;
+
+document.head.appendChild(style);
+
+// Initialize event listeners
+function initializeEventListeners() {
+    // Re-add word count listener
+    const description = document.querySelector('textarea[name="description"]');
+    const wordCount = document.querySelector('.word-count');
+    if (description && wordCount) {
+        description.addEventListener('input', function() {
+            const words = this.value.trim().split(/\s+/).length;
+            wordCount.textContent = `${words}/50 words`;
+            if (words > 50) {
+                const words = this.value.trim().split(/\s+/).slice(0, 50);
+                this.value = words.join(' ');
+            }
+        });
+    }
+}
+
+// Initial setup
+document.addEventListener('DOMContentLoaded', initializeEventListeners);
+</script>
+{% endblock %} 
