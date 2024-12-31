@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
   <style>:root {
@@ -867,7 +869,293 @@
       background-color: var(--white_a20);
     }
     .contact-item { margin-block-start: 0; }
-  }</style>
+  }
+  
+  .info-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+  }
+  
+  .modal-content {
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  
+  .glass-effect {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .close-modal {
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    font-size: 28px;
+    cursor: pointer;
+    color: #333;
+  }
+  
+  .feature-grid,
+  .service-grid,
+  .contact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+  
+  .feature-item,
+  .service-item,
+  .contact-item {
+    text-align: center;
+    padding: 2rem;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+  }
+  
+  .feature-item:hover,
+  .service-item:hover,
+  .contact-item:hover {
+    transform: translateY(-5px);
+  }
+  
+  .modal-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+  }
+  
+  .modal-logo {
+    height: 60px;
+    margin-bottom: 1rem;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: rgba(255, 255, 255, 0.98);
+    min-width: 320px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    padding: 1.5rem;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+    transform: translateY(10px);
+    opacity: 0;
+    transition: all 0.3s ease;
+    border: 2px solid #007FFF;
+  }
+  
+  .dropdown:hover .dropdown-content {
+    display: block;
+    transform: translateY(0);
+    opacity: 1;
+  }
+  
+  .feature-list,
+  .target-list,
+  .contact-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .feature,
+  .target,
+  .contact {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.2rem;
+    border-radius: 8px;
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .feature:hover,
+  .target:hover,
+  .contact:hover {
+    background: rgba(0, 127, 255, 0.1);
+    transform: translateX(8px);
+    box-shadow: 0 4px 12px rgba(0, 127, 255, 0.1);
+  }
+  
+  .feature i,
+  .target i,
+  .contact i {
+    color: #00B4DB;
+    font-size: 1.8rem;
+    width: 40px;
+    text-align: center;
+    transition: transform 0.4s ease;
+  }
+  
+  .feature:hover i,
+  .target:hover i,
+  .contact:hover i {
+    transform: scale(1.2) rotate(360deg);
+  }
+  
+  .feature span,
+  .target span,
+  .contact span {
+    color: #0099CC;
+    font-weight: 600;
+    font-size: 1.3rem;
+    letter-spacing: 0.5px;
+    position: relative;
+    transition: all 0.3s ease;
+  }
+  
+  .feature span::after,
+  .target span::after,
+  .contact span::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 100%;
+    height: 2.5px;
+    background: #007FFF;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.4s ease;
+  }
+  
+  .feature:hover span::after,
+  .target:hover span::after,
+  .contact:hover span::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+  
+  .feature::after,
+  .target::after,
+  .contact::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(0, 127, 255, 0.1);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease;
+  }
+  
+  .feature:hover::after,
+  .target:hover::after,
+  .contact:hover::after {
+    width: 200px;
+    height: 200px;
+  }
+  
+  @keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+  }
+  
+  .feature,
+  .target,
+  .contact {
+    opacity: 0;
+    animation: slideIn 0.5s ease forwards;
+  }
+  
+  .feature:nth-child(1),
+  .target:nth-child(1),
+  .contact:nth-child(1) { animation-delay: 0.1s; }
+  
+  .feature:nth-child(2),
+  .target:nth-child(2),
+  .contact:nth-child(2) { animation-delay: 0.2s; }
+  
+  .feature:nth-child(3),
+  .target:nth-child(3),
+  .contact:nth-child(3) { animation-delay: 0.3s; }
+  
+  .feature:nth-child(4),
+  .target:nth-child(4),
+  .contact:nth-child(4) { animation-delay: 0.4s; }
+  
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+  }
+  
+  .feature i,
+  .target i,
+  .contact i {
+    animation: pulse 2s infinite;
+  }
+  
+  @media (max-width: 768px) {
+    .dropdown-content {
+        min-width: 280px;
+        padding: 1.2rem;
+    }
+    
+    .feature,
+    .target,
+    .contact {
+        padding: 1rem;
+    }
+
+    .feature span,
+    .target span,
+    .contact span {
+        font-size: 1.2rem;
+    }
+
+    .feature i,
+    .target i,
+    .contact i {
+        font-size: 1.6rem;
+        width: 35px;
+    }
+  }
+  </style>
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -904,19 +1192,72 @@
           <li class="navbar-item">
             <a href="{% url 'patients:home' %}" class="navbar-link title-md">Home</a>
           </li>
-          <li class="navbar-item">
-            <a href="{% url 'patients:make_appointment' %}" class="navbar-link title-md">Appointment</a>
+          <li class="navbar-item dropdown">
+            <a href="#" class="navbar-link title-md">What we serve</a>
+            <div class="dropdown-content">
+              <div class="feature-list">
+                <div class="feature">
+                  <i class="fas fa-user-md"></i>
+                  <span>Doctor Management</span>
+                </div>
+                <div class="feature">
+                  <i class="fas fa-calendar-check"></i>
+                  <span>Appointment System</span>
+                </div>
+                <div class="feature">
+                  <i class="fas fa-pills"></i>
+                  <span>Medicine Management</span>
+                </div>
+                <div class="feature">
+                  <i class="fas fa-file-medical"></i>
+                  <span>Medical Records</span>
+                </div>
+              </div>
+            </div>
           </li>
           {% if user.is_authenticated %}
-              <li class="navbar-item">
-                  <a href="{% url 'patients:patient_list' %}" class="navbar-link title-md">Patients</a>
-              </li>
-              <li class="navbar-item">
-                  <a href="{% url 'patients:appointment_list' %}" class="navbar-link title-md">Appointments</a>
-              </li>
-             
-          {% else %}
-              
+            <li class="navbar-item dropdown">
+              <a href="#" class="navbar-link title-md">Who we serve</a>
+              <div class="dropdown-content">
+                <div class="target-list">
+                  <div class="target">
+                    <i class="fas fa-hospital"></i>
+                    <span>Hospitals</span>
+                  </div>
+                  <div class="target">
+                    <i class="fas fa-clinic-medical"></i>
+                    <span>Clinics</span>
+                  </div>
+                  <div class="target">
+                    <i class="fas fa-user-md"></i>
+                    <span>Private Doctors</span>
+                  </div>
+                  <div class="target">
+                    <i class="fas fa-stethoscope"></i>
+                    <span>Specialists</span>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li class="navbar-item dropdown">
+              <a href="#" class="navbar-link title-md">Reach us</a>
+              <div class="dropdown-content">
+                <div class="contact-list">
+                  <div class="contact">
+                    <i class="fas fa-envelope"></i>
+                    <span>krishkansara18@gmail.com</span>
+                  </div>
+                  <div class="contact">
+                    <i class="fas fa-phone"></i>
+                    <span>+1 (555) 123-4567</span>
+                  </div>
+                  <div class="contact">
+                    <i class="fas fa-clock"></i>
+                    <span>Mon-Fri: 9AM-6PM</span>
+                  </div>
+                </div>
+              </div>
+            </li>
           {% endif %}
         </ul>
         <ul class="social-list">
@@ -955,19 +1296,119 @@
     </div>
   </header>
 
+  <div class="info-modal" id="whatWeServeModal">
+    <div class="modal-content glass-effect">
+        <span class="close-modal">&times;</span>
+        <div class="modal-header">
+            <img src="{% static 'images/logo.png' %}" alt="CareReach Logo" class="modal-logo">
+            <h2>What We Serve</h2>
+        </div>
+        <div class="modal-body">
+            <div class="feature-grid">
+                <div class="feature-item">
+                    <i class="fas fa-hospital-user"></i>
+                    <h3>Patient Management</h3>
+                    <p>Complete patient records and history tracking</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-calendar-check"></i>
+                    <h3>Appointment System</h3>
+                    <p>Streamlined appointment booking and scheduling</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-pills"></i>
+                    <h3>Medicine Management</h3>
+                    <p>Comprehensive medicine inventory system</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-file-medical"></i>
+                    <h3>Medical Records</h3>
+                    <p>Secure and organized patient medical history</p>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+
+  <div class="info-modal" id="whoWeServeModal">
+    <div class="modal-content glass-effect">
+        <span class="close-modal">&times;</span>
+        <div class="modal-header">
+            <img src="{% static 'images/logo.png' %}" alt="CareReach Logo" class="modal-logo">
+            <h2>Who We Serve</h2>
+        </div>
+        <div class="modal-body">
+            <div class="service-grid">
+                <div class="service-item">
+                    <i class="fas fa-hospital"></i>
+                    <h3>Hospitals</h3>
+                    <p>Comprehensive solutions for large healthcare facilities</p>
+                </div>
+                <div class="service-item">
+                    <i class="fas fa-clinic-medical"></i>
+                    <h3>Clinics</h3>
+                    <p>Perfect for small to medium medical practices</p>
+                </div>
+                <div class="service-item">
+                    <i class="fas fa-user-md"></i>
+                    <h3>Individual Doctors</h3>
+                    <p>Tailored for private practitioners</p>
+                </div>
+                <div class="service-item">
+                    <i class="fas fa-stethoscope"></i>
+                    <h3>Specialists</h3>
+                    <p>Customized for specialized medical professionals</p>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+
+  <div class="info-modal" id="reachUsModal">
+    <div class="modal-content glass-effect">
+        <span class="close-modal">&times;</span>
+        <div class="modal-header">
+            <img src="{% static 'images/logo.png' %}" alt="CareReach Logo" class="modal-logo">
+            <h2>Reach Us</h2>
+        </div>
+        <div class="modal-body">
+            <div class="contact-grid">
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <h3>Email Us</h3>
+                    <p>krishkansara18@gmail.com</p>
+                    <p>support@carereach.com</p>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-phone-alt"></i>
+                    <h3>Call Us</h3>
+                    <p>+1 (555) 123-4567</p>
+                    <p>+1 (555) 987-6543</p>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-clock"></i>
+                    <h3>Working Hours</h3>
+                    <p>Monday - Friday: 9:00 AM - 6:00 PM</p>
+                    <p>Saturday: 9:00 AM - 1:00 PM</p>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+
   <main>
     <article>
       <section class="section hero" style="background-image: url('https://raw.githubusercontent.com/farazc60/Project-Images/main/medical/assets/hero-bg.png')" aria-label="home">
         <div class="container">
           <div class="hero-content">
-            <p class="hero-subtitle has-before" data-reveal="left">Welcome To Doclab</p>
+            <p class="hero-subtitle has-before" data-reveal="left">welcome to Rcare</p>
             <h1 class="headline-lg hero-title" data-reveal="left">
               Find Nearest <br>
               Doctor.
             </h1>
             <div class="hero-card" data-reveal="left">
               <p class="title-lg card-text">
-                Search doctors. clinics. hospitals. etc.
+                Know where our softwares are being used
               </p>
               <div class="wrapper">
                 <div class="input-wrapper title-lg">
@@ -976,7 +1417,7 @@
                 </div>
                 <button class="btn has-before">
                   <ion-icon name="search"></ion-icon>
-                  <span class="span title-md">Find Now</span>
+                  <span class="span title-md">see locations</span>
                 </button>
               </div>
             </div>
@@ -1375,7 +1816,7 @@
       </div>
       <div class="footer-bottom">
         <p class="text copyright">
-          © Doclab 2022 | All Rights Reserved by codewithsadee
+          © Rcare 2022 | All Rights Reserved
         </p>
         <ul class="social-list">
           <li>

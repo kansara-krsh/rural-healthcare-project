@@ -649,6 +649,94 @@
                 margin-left: 0;
             }
         }
+
+        .info-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: relative;
+            background: white;
+            width: 80%;
+            max-width: 800px;
+            margin: 50px auto;
+            border-radius: 12px;
+            padding: 2rem;
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        .modal-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .modal-logo {
+            height: 60px;
+            margin-bottom: 1rem;
+        }
+
+        .close-modal {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .feature-grid,
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-item,
+        .service-item,
+        .contact-item {
+            text-align: center;
+            padding: 2rem;
+            border-radius: 8px;
+            background: #f8f9fa;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-item:hover,
+        .service-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-item i,
+        .service-item i,
+        .contact-item i {
+            font-size: 2.5rem;
+            color: #00B4DB;
+            margin-bottom: 1rem;
+        }
+
+        .contact-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
     </style>
     {% block styles %}{% endblock %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -867,6 +955,38 @@
         document.querySelector('.close-modal').onclick = function() {
             document.querySelector('.medicine-modal').style.display = 'none';
         };
+
+        // Update the navigation click handlers
+        document.addEventListener('DOMContentLoaded', function() {
+            // What We Serve
+            document.querySelector('a[href*="make_appointment"]').addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('whatWeServeModal').style.display = 'block';
+            });
+
+            // Who We Serve
+            document.querySelector('a[href*="patient_list"]').addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('whoWeServeModal').style.display = 'block';
+            });
+
+            // Reach Us
+            document.querySelector('a[href*="appointment_list"]').addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('reachUsModal').style.display = 'block';
+            });
+
+            // Close modals
+            document.querySelectorAll('.close-modal, .info-modal').forEach(element => {
+                element.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        document.querySelectorAll('.info-modal').forEach(modal => {
+                            modal.style.display = 'none';
+                        });
+                    }
+                });
+            });
+        });
     </script>
     {% block scripts %}{% endblock %}
 </body>
